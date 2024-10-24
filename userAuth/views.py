@@ -10,7 +10,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)  # Log the user in after signup
-            return redirect(reverse('home'))
+            return redirect(reverse('account'))
     else:
         form = SignUpForm()
     return render(request, 'userAuth/signup.html', {'form': form})
