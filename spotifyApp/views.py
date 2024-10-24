@@ -1,3 +1,4 @@
 from django.shortcuts import render
 
-# Create your views here.
+def link_spotify_account(request):
+    return render(request, 'spotifyApp/link.html')

@@ -55,7 +55,7 @@ ROOT_URLCONF = 'spotifyWrapper.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'userAuth/templates', BASE_DIR / 'spotifyWrapper/templates'],
+        'DIRS': [BASE_DIR / 'userAuth/templates', BASE_DIR / 'spotifyWrapper/templates', BASE_DIR / 'spotifyApp/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
