@@ -10,6 +10,9 @@
         <a class="navbar-brand" href="{% url 'home' %}">Spotify Wrapper</a>
         <ul class="navbar-nav ml-auto">
             {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account' %}">Account</a>
+                </li>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
                     <button type="submit" class="nav-link">Logout</a>

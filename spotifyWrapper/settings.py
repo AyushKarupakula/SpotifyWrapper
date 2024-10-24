@@ -118,7 +118,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'spotifyWrapper/static'),  # Add this line
+    os.path.join(BASE_DIR, 'spotifyWrapper/static'),
 ]
 
 # Default primary key field type
