@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1>Account</h1>
-    <p>Welcome, {{ user.username }}!</p>
+    <p>Welcome, {{ user.username }}! Please link your Spotify account!</p>
+    <p><a href="{% url 'spotify:spotify_link' %}" class="btn btn-primary">Link Spotify Account</a></p>
     <p><a href="{% url 'delete' %}" class="btn btn-danger">Delete Account</a></p>
 {% endblock %}
