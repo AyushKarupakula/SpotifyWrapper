@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('userAuth.urls')), # includes userAuth's URL config at root
     path('', views.home, name='home'),
+    path('contact/', views.contact, name='contact'),
 ]
