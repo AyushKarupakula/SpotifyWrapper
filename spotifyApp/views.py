@@ -3,9 +3,17 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from django.urls import reverse
 from urllib.parse import urlencode
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from .models import SpotifyWrap
 
 def spotify_login(request):
-    scope = 'user-read-recently-played' # change this is accomodate required scope
+    scope = ' '.join([
+        'user-read-recently-played',
+        'user-top-read',
+        'user-read-private',
+        'user-read-email',
+    ])
     query_params = urlencode({
         'client_id': settings.SPOTIFY_CLIENT_ID,
         'response_type': 'code',
@@ -60,3 +68,40 @@ def recently_played(request):
     ]
 
     return render(request, 'spotifyApp/report.html', {'tracks': tracks})
+
+
+def get_spotify_data(access_token):
+    headers = {'Authorization': f'Bearer {access_token}'}
+    
+    # Get recently played
+    recent = requests.get('https://api.spotify.com/v1/me/player/recently-played', headers=headers).json()
+    
+    # Get top tracks
+    top_tracks = requests.get('https://api.spotify.com/v1/me/top/tracks', headers=headers).json()
+    
+    # Get top artists
+    top_artists = requests.get('https://api.spotify.com/v1/me/top/artists', headers=headers).json()
+    
+    return {
+        'recently_played': recent.get('items', []),
+        'top_tracks': top_tracks.get('items', []),
+        'top_artists': top_artists.get('items', [])
+    }
+
+
+@login_required
+def generate_wrap(request):
+    access_token = request.session.get('spotify_access_token')
+    if not access_token:
+        return redirect('spotify:spotify-login')
+        
+    data = get_spotify_data(access_token)
+    
+    # Create new wrap
+    wrap = SpotifyWrap.objects.create(
+        user=request.user,
+        wrap_data=data,
+        title=f"Wrap {timezone.now().strftime('%Y-%m-%d')}"
+    )
+    
+    return redirect('spotify:view-wrap', wrap_id=wrap.id)

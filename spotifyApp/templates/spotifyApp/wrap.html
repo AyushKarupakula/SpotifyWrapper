@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="wrap-container">
+    <!-- Slide 1: Welcome -->
+    <div class="wrap-slide" id="slide-1">
+        <h1>Your Spotify Wrap</h1>
+        <p>Let's see what you've been listening to...</p>
+    </div>
+
+    <!-- Slide 2: Top Artists -->
+    <div class="wrap-slide" id="slide-2">
+        <h2>Your Top Artists</h2>
+        <div class="artist-grid">
+            {% for artist in wrap.wrap_data.top_artists|slice:":5" %}
+                <div class="artist-card">
+                    <img src="{{ artist.images.0.url }}" alt="{{ artist.name }}">
+                    <h3>{{ artist.name }}</h3>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Add more slides here -->
+</div>
+
+<div class="wrap-controls">
+    <button onclick="previousSlide()">Previous</button>
+    <button onclick="nextSlide()">Next</button>
+</div>
+{% endblock %}
