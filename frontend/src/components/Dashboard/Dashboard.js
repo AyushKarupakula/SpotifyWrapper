@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { spotifyAPI } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import './Dashboard.css';
 
 function Dashboard() {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
+  const { isSpotifyAuthenticated, setIsSpotifyAuthenticated } = useAuth();
 
   useEffect(() => {
     checkSpotifyAuth();

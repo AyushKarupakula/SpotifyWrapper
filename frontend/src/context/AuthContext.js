@@ -6,6 +6,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -18,6 +19,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Check auth error:', error);
       setUser(null);
+      setIsSpotifyAuthenticated(false);
     } finally {
       setLoading(false);
     }
@@ -25,14 +27,12 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      console.log('Registering user with data:', userData); // Debug log
       const response = await authAPI.register(userData);
-      console.log('Registration response:', response); // Debug log
       setUser(response.data);
       return response.data;
     } catch (error) {
-      console.error('Registration error in context:', error); // Debug log
-      throw error; // Re-throw the error to be handled by the component
+      console.error('Registration error in context:', error);
+      throw error;
     }
   };
 
@@ -43,15 +43,29 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await authAPI.logout();
-    setUser(null);
+    try {
+      await authAPI.logout();
+      setUser(null);
+      setIsSpotifyAuthenticated(false);
+      localStorage.removeItem('spotifyAuthenticated');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, register, login, logout }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      loading, 
+      register, 
+      login, 
+      logout,
+      isSpotifyAuthenticated,
+      setIsSpotifyAuthenticated 
+    }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(AuthContext); 
+export const useAuth = () => useContext(AuthContext);

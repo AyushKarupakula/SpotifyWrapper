@@ -56,6 +56,9 @@ def register_view(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout_view(request):
+    # Clear Spotify token from session
+    if 'spotify_token' in request.session:
+        del request.session['spotify_token']
     logout(request)
     return Response({'message': 'Logged out successfully'})
 

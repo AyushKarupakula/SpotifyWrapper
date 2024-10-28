@@ -1,10 +1,20 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './Navbar.css';
 
 function Navbar() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   return (
     <nav className="navbar">
@@ -16,7 +26,7 @@ function Navbar() {
           <>
             <Link to="/dashboard">Dashboard</Link>
             <Link to="/profile">Profile</Link>
-            <Link to="/logout">Logout</Link>
+            <button onClick={handleLogout} className="nav-button">Logout</button>
           </>
         ) : (
           <>
