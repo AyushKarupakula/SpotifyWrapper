@@ -6,6 +6,7 @@ from urllib.parse import urlencode
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from .models import SpotifyWrap
+from django.contrib import messages
 
 def spotify_login(request):
     scope = ' '.join([
@@ -26,24 +27,46 @@ def spotify_login(request):
 
 def spotify_callback(request):
     code = request.GET.get('code')
+    error = request.GET.get('error')
+
+    if error:
+        # Handle the error case
+        messages.error(request, f"Spotify authorization failed: {error}")
+        return redirect('home')
 
     # Exchange the authorization code for an access token
     token_url = 'https://accounts.spotify.com/api/token'
-    response = requests.post(token_url, data={
-        'grant_type': 'authorization_code',
-        'code': code,
-        'redirect_uri': settings.SPOTIFY_REDIRECT_URI,
-        'client_id': settings.SPOTIFY_CLIENT_ID,
-        'client_secret': settings.SPOTIFY_CLIENT_SECRET,
-    })
+    response = requests.post(
+        token_url,
+        data={
+            'grant_type': 'authorization_code',
+            'code': code,
+            'redirect_uri': settings.SPOTIFY_REDIRECT_URI,
+            'client_id': settings.SPOTIFY_CLIENT_ID,
+            'client_secret': settings.SPOTIFY_CLIENT_SECRET,
+        },
+        headers={
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    )
+
+    if response.status_code != 200:
+        # Handle API error
+        error_data = response.json()
+        messages.error(request, f"Failed to get access token: {error_data.get('error_description', 'Unknown error')}")
+        return redirect('home')
 
     token_data = response.json()
     access_token = token_data.get('access_token')
+    
+    if not access_token:
+        messages.error(request, "No access token received from Spotify")
+        return redirect('home')
 
-    # Save the access token in session (or database) for later use
+    # Save the access token in session
     request.session['spotify_access_token'] = access_token
-
-    return redirect(reverse('spotify:report'))  # Redirect to the report view
+    
+    return redirect('spotify:report')
 
 
 def recently_played(request):
