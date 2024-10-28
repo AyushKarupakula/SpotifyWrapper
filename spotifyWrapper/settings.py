@@ -49,9 +49,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'userAuth',
     'spotifyApp',
+    'corsheaders',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -150,3 +153,21 @@ print("SPOTIFY_CLIENT_ID:", SPOTIFY_CLIENT_ID)
 print("SPOTIFY_REDIRECT_URI:", SPOTIFY_REDIRECT_URI)
 
 print("BASE_DIR:", BASE_DIR)
+
+# Allow React dev server during development
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+# API URLs will be prefixed with /api/
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}

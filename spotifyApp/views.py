@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from .models import SpotifyWrap
 from django.contrib import messages
+from django.http import JsonResponse
 
 def spotify_login(request):
     scope = ' '.join([
@@ -132,9 +133,20 @@ def generate_wrap(request):
 @login_required
 def wrap_history(request):
     wraps = SpotifyWrap.objects.filter(user=request.user)
-    return render(request, 'spotifyApp/wrap_history.html', {'wraps': wraps})
+    wraps_data = [{
+        'id': wrap.id,
+        'title': wrap.title,
+        'date_generated': wrap.date_generated.strftime('%Y-%m-%d %H:%M:%S'),
+    } for wrap in wraps]
+    return JsonResponse({'wraps': wraps_data})
 
 @login_required
 def view_wrap(request, wrap_id):
     wrap = get_object_or_404(SpotifyWrap, id=wrap_id, user=request.user)
-    return render(request, 'spotifyApp/wrap.html', {'wrap': wrap})
+    wrap_data = {
+        'id': wrap.id,
+        'title': wrap.title,
+        'date_generated': wrap.date_generated.strftime('%Y-%m-%d %H:%M:%S'),
+        'data': wrap.wrap_data
+    }
+    return JsonResponse(wrap_data)
