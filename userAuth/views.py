@@ -1,33 +1,71 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from .forms import SignUpForm
-from django.urls import reverse
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.models import User
+from .serializers import UserSerializer, RegisterSerializer
+from django.middleware.csrf import get_token
 
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login_view(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        login(request, user)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+    return Response(
+        {'message': 'Invalid credentials'}, 
+        status=status.HTTP_401_UNAUTHORIZED
+    )
 
-def signup(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)  # Log the user in after signup
-            return redirect(reverse('home'))
-    else:
-        form = SignUpForm()
-    return render(request, 'userAuth/signup.html', {'form': form})
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register_view(request):
+    try:
+        print("Registration data received:", request.data)  # Debug print
+        print("Request headers:", request.headers)  # Debug print
+        print("Request META:", request.META.get('CSRF_COOKIE', 'No CSRF Cookie'))  # Debug print
+        
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            login(request, user)
+            return Response(
+                UserSerializer(user).data,
+                status=status.HTTP_201_CREATED
+            )
+        print("Serializer errors:", serializer.errors)  # Debug print
+        return Response(
+            {'error': serializer.errors},  # Send back the actual validation errors
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    except Exception as e:
+        print("Registration exception:", str(e))  # Debug print
+        import traceback
+        print("Full traceback:", traceback.format_exc())  # Debug print
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
-def account(request):
-    if request.user.is_authenticated:
-        user = request.user
-        return render(request, 'userAuth/account.html', {'user': user})
-    else:
-        return redirect('login')
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_view(request):
+    logout(request)
+    return Response({'message': 'Logged out successfully'})
 
-def delete(request):
-    if request.user.is_authenticated:
-        user = request.user
-        if request.method == 'POST':
-            user.delete()
-            return redirect('home')
-        return render(request, 'userAuth/delete.html', {'user': user})
-    else:
-        return redirect('delete')
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_view(request):
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def csrf_token(request):
+    return Response({'csrfToken': get_token(request)})

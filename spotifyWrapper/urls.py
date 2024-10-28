@@ -15,13 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
-from . import views
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
-    path('', include('userAuth.urls')), # includes userAuth's URL config at root
-    path('spotify/', include('spotifyApp.urls'), name='spotify'), # includes spotifyApp's URL config at /spotify/
-    path('contact/', views.contact, name='contact'),
+    path('api/auth/', include('userAuth.urls')),
+    path('api/spotify/', include('spotifyApp.urls')),
 ]
