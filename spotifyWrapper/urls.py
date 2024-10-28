@@ -20,7 +20,8 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('userAuth.urls')), # includes userAuth's URL config at root
     path('', views.home, name='home'),
+    path('', include('userAuth.urls')), # includes userAuth's URL config at root
+    path('spotify/', include('spotifyApp.urls'), name='spotify'), # includes spotifyApp's URL config at /spotify/
     path('contact/', views.contact, name='contact'),
 ]

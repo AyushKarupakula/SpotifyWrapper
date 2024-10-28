@@ -1,3 +1,12 @@
 {% extends 'base.html' %}
 
-<h1>Welcome, {{ user.username }}!</h1>
+{% block content %}
+    <h1>Home</h1>
+    {% if user.is_authenticated %}
+        <h1>Welcome, {{ user.username }}!</h1>
+        <p><a href="{% url 'spotify:spotify-login' %}" class="btn btn-primary">View Your Report</a></p>
+    {% else %}
+        <h1>Please log in to access your report</h1>
+        <p><a href="{% url 'login' %}" class="btn btn-primary">Log In</a></p>
+    {% endif %}
+{% endblock %}
