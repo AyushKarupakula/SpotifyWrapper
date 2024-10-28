@@ -5,6 +5,7 @@ import Navbar from './components/Navigation/Navbar';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import Dashboard from './components/Dashboard/Dashboard';
+import SpotifyCallback from './components/Spotify/SpotifyCallback';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -46,6 +47,7 @@ function AppContent() {
             <Dashboard />
           </ProtectedRoute>
         } />
+        <Route path="/spotify/callback" element={<SpotifyCallback />} />
       </Routes>
     </div>
   );

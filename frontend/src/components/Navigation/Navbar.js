@@ -1,15 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import './Navbar.css';
 
-function Navbar({ isAuthenticated }) {
+function Navbar() {
+  const { user } = useAuth();
+
   return (
     <nav className="navbar">
       <div className="navbar-brand">
         <Link to="/">Spotify Wrapper</Link>
       </div>
       <div className="navbar-links">
-        {isAuthenticated ? (
+        {user ? (
           <>
             <Link to="/dashboard">Dashboard</Link>
             <Link to="/profile">Profile</Link>

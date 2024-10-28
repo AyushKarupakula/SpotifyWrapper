@@ -55,7 +55,7 @@ export const authAPI = {
 
 export const spotifyAPI = {
   authorize: () => api.get('/spotify/auth/'),
-  callback: (code) => api.post('/spotify/callback/', { code }),
+  callback: (data) => api.post('/spotify/callback/', data),
   getUserPlaylists: () => api.get('/spotify/playlists/'),
 };
 

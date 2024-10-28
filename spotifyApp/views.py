@@ -64,8 +64,12 @@ def spotify_auth(request):
     try:
         spotify = SpotifyAPI()
         auth_url = spotify.get_auth_url()
+        print("Generated Spotify Auth URL:", auth_url)
+        print("Using Client ID:", settings.SPOTIFY_CLIENT_ID)
+        print("Using Redirect URI:", settings.SPOTIFY_REDIRECT_URI)
         return Response({'auth_url': auth_url})
     except Exception as e:
+        print("Spotify Auth Error:", str(e))
         return Response(
             {'error': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
