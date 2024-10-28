@@ -95,7 +95,7 @@ spotifyWrapper/
 
 1. Go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
 2. Create a new application
-3. Set the redirect URI to `http://localhost:8000/spotify/callback/`
+3. Set the redirect URI to `http://localhost:3000/spotify/callback`
 4. Copy the Client ID and Client Secret to your `.env` file
 
 ## Available URLs
