@@ -4,5 +4,7 @@ from . import views
 app_name = 'spotify'
 
 urlpatterns = [
-    path('link/', views.link_spotify_account, name='spotify_link'), # temp view function name
+    path('link/', views.spotify_login, name='spotify-login'),
+    path('callback/', views.spotify_callback, name='spotify-callback'),
+    path('report/', views.recently_played, name='report'),
 ]
