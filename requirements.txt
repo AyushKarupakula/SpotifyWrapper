@@ -10,9 +10,6 @@ django-cors-headers>=4.3.0
 # For environment variables
 python-dotenv>=1.0.0
 
-# For Spotify API
-spotipy>=2.0.0
-
 # For handling HTTP requests
 requests>=2.31.0
 
