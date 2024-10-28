@@ -1,5 +1,5 @@
 import requests
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from django.urls import reverse
 from urllib.parse import urlencode
@@ -105,3 +105,13 @@ def generate_wrap(request):
     )
     
     return redirect('spotify:view-wrap', wrap_id=wrap.id)
+
+@login_required
+def wrap_history(request):
+    wraps = SpotifyWrap.objects.filter(user=request.user)
+    return render(request, 'spotifyApp/wrap_history.html', {'wraps': wraps})
+
+@login_required
+def view_wrap(request, wrap_id):
+    wrap = get_object_or_404(SpotifyWrap, id=wrap_id, user=request.user)
+    return render(request, 'spotifyApp/wrap.html', {'wrap': wrap})

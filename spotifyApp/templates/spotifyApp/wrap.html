@@ -21,11 +21,46 @@
         </div>
     </div>
 
-    <!-- Add more slides here -->
+    <!-- Slide 3: Top Tracks -->
+    <div class="wrap-slide" id="slide-3">
+        <h2>Your Top Tracks</h2>
+        <div class="track-list">
+            {% for track in wrap.wrap_data.top_tracks|slice:":10" %}
+                <div class="track-item">
+                    <img src="{{ track.album.images.0.url }}" alt="{{ track.name }}">
+                    <div class="track-info">
+                        <h3>{{ track.name }}</h3>
+                        <p>{{ track.artists.0.name }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Slide 4: Recently Played -->
+    <div class="wrap-slide" id="slide-4">
+        <h2>Recently Played</h2>
+        <div class="recent-tracks">
+            {% for item in wrap.wrap_data.recently_played|slice:":5" %}
+                <div class="recent-track">
+                    <img src="{{ item.track.album.images.0.url }}" alt="{{ item.track.name }}">
+                    <div class="track-info">
+                        <h3>{{ item.track.name }}</h3>
+                        <p>{{ item.track.artists.0.name }}</p>
+                        <small>Played: {{ item.played_at|date:"F j, Y" }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 <div class="wrap-controls">
-    <button onclick="previousSlide()">Previous</button>
-    <button onclick="nextSlide()">Next</button>
+    <button id="prevButton" onclick="previousSlide()">Previous</button>
+    <button id="nextButton" onclick="nextSlide()">Next</button>
 </div>
+
+{% block extra_js %}
+<script src="{% static 'js/wrap.js' %}"></script>
+{% endblock %}
 {% endblock %}
