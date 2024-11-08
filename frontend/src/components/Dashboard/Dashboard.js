@@ -28,6 +28,7 @@ function Dashboard() {
     }
   };
 
+  // Define handleSpotifyLogin function here
   const handleSpotifyLogin = async () => {
     try {
       const response = await spotifyAPI.authorize();
@@ -49,7 +50,7 @@ function Dashboard() {
   };
 
   if (loading) return <div className="dashboard-loading">Loading...</div>;
-  
+
   if (!isSpotifyAuthenticated) {
     return (
       <div className="dashboard">
@@ -84,4 +85,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard; 
+export default Dashboard;

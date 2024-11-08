@@ -10,11 +10,11 @@ function SpotifyCallback() {
     const handleCallback = async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get('code');
-      
+
       if (code) {
         try {
           await spotifyAPI.callback({ code });
-          navigate('/dashboard');
+          navigate('/dashboard');  // Redirect to dashboard after successful callback
         } catch (err) {
           setError('Failed to authenticate with Spotify');
         }
@@ -33,4 +33,4 @@ function SpotifyCallback() {
   return <div className="spotify-callback-loading">Connecting to Spotify...</div>;
 }
 
-export default SpotifyCallback; 
+export default SpotifyCallback;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, Container, Typography } from '@mui/material';
-import { spotifyService } from '../services/api';
+import { spotifyAPI } from '../services/api';
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -8,9 +8,8 @@ const Login = () => {
   const handleSpotifyLogin = async () => {
     try {
       setLoading(true);
-      const response = await spotifyService.login();
-      // Spotify login returns a URL to redirect to
-      window.location.href = response.data.auth_url;
+      const response = await spotifyAPI.authorize();
+      window.location.href = response.data.auth_url;  // Redirect to Spotify auth URL
     } catch (error) {
       console.error('Error during Spotify login:', error);
     } finally {
@@ -20,12 +19,7 @@ const Login = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ 
-        mt: 8, 
-        display: 'flex', 
-        flexDirection: 'column', 
-        alignItems: 'center' 
-      }}>
+      <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Login with Spotify
         </Typography>

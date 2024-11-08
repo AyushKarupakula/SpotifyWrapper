@@ -17,11 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('userAuth.urls')),
     path('api/spotify/', include('spotifyApp.urls')),
+    path('spotify/callback/', views.spotify_callback, name='spotify_callback'),
     # Redirect all other requests to React frontend
     path('', RedirectView.as_view(url='http://localhost:3000')),
 ]

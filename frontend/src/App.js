@@ -10,15 +10,15 @@ import './App.css';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  
+
   if (loading) {
     return <div>Loading...</div>;
   }
-  
+
   if (!user) {
     return <Navigate to="/login" />;
   }
-  
+
   return children;
 };
 
@@ -29,17 +29,7 @@ function AppContent() {
     <div className="App">
       <Navbar />
       <Routes>
-        <Route path="/" element={
-          <div className="App-header">
-            <h1>Welcome to Spotify Wrapper</h1>
-            {!user && (
-              <div className="auth-buttons">
-                <a href="/login" className="auth-button">Login</a>
-                <a href="/register" className="auth-button">Register</a>
-              </div>
-            )}
-          </div>
-        } />
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={

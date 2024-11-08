@@ -2,24 +2,6 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8000/api';
 
-// Function to get CSRF token
-const getCsrfToken = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/auth/csrf/`, {
-      withCredentials: true,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
-    });
-    return response.data.csrfToken;
-  } catch (error) {
-    console.error('Error fetching CSRF token:', error);
-    return null;
-  }
-};
-
-// Create axios instance
 const api = axios.create({
   baseURL: API_URL,
   withCredentials: true,
@@ -29,16 +11,25 @@ const api = axios.create({
   },
 });
 
-// Add request interceptor to include CSRF token
-api.interceptors.request.use(async (config) => {
+// Function to get CSRF token from cookies
+const getCsrfToken = () => {
+  const name = 'csrftoken';
+  const cookies = document.cookie.split(';');
+  for (let cookie of cookies) {
+    cookie = cookie.trim();
+    if (cookie.startsWith(`${name}=`)) {
+      return cookie.substring(name.length + 1);
+    }
+  }
+  return null;
+};
+
+// Interceptor to add CSRF token to all non-GET requests
+api.interceptors.request.use((config) => {
   if (config.method !== 'get') {
-    try {
-      const token = await getCsrfToken();
-      if (token) {
-        config.headers['X-CSRFToken'] = token;
-      }
-    } catch (error) {
-      console.error('Error in interceptor:', error);
+    const csrfToken = getCsrfToken();
+    if (csrfToken) {
+      config.headers['X-CSRFToken'] = csrfToken;
     }
   }
   return config;
@@ -46,6 +37,7 @@ api.interceptors.request.use(async (config) => {
   return Promise.reject(error);
 });
 
+// Define authAPI and spotifyAPI as before
 export const authAPI = {
   login: (credentials) => api.post('/auth/login/', credentials),
   register: (userData) => api.post('/auth/register/', userData),
