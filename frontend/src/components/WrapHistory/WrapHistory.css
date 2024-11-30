@@ -1,0 +1,81 @@
+.wrap-history-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.wrap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.wrap-card {
+  background: #282828;
+  padding: 1.5rem;
+  border-radius: 8px;
+  transition: transform 0.2s;
+  position: relative;
+}
+
+.wrap-card:hover {
+  transform: translateY(-5px);
+}
+
+.wrap-card h3 {
+  margin: 0 0 1rem 0;
+  color: #1DB954;
+}
+
+.view-wrap-button {
+  display: inline-block;
+  background: #1DB954;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 20px;
+  text-decoration: none;
+  margin-top: 1rem;
+  transition: background-color 0.3s;
+}
+
+.view-wrap-button:hover {
+  background: #1ed760;
+}
+
+.no-wraps {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.generate-wrap-button {
+  display: inline-block;
+  background: #1DB954;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 25px;
+  text-decoration: none;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.wrap-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.wrap-card-header h3 {
+  margin: 0;
+  flex: 1;
+}
+
+.delete-icon {
+  color: rgba(255, 255, 255, 0.7) !important;
+  transition: color 0.2s ease !important;
+}
+
+.delete-icon:hover {
+  color: #e91e63 !important;
+} 

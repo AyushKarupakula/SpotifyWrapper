@@ -30,6 +30,17 @@ const WrapHistory = () => {
     fetchWraps();
   }, []);
 
+  const handleDelete = async (wrapId) => {
+    if (window.confirm('Are you sure you want to delete this wrap?')) {
+      try {
+        await axios.delete(`/api/spotify/wrap/${wrapId}/`);
+        setWraps(wraps.filter(wrap => wrap.id !== wrapId));
+      } catch (error) {
+        console.error('Error deleting wrap:', error);
+      }
+    }
+  };
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
@@ -55,6 +66,13 @@ const WrapHistory = () => {
                     color="primary"
                   >
                     View Wrap
+                  </Button>
+                  <Button 
+                    variant="outlined"
+                    color="error"
+                    onClick={() => handleDelete(wrap.id)}
+                  >
+                    Delete
                   </Button>
                 </CardActions>
               </Card>

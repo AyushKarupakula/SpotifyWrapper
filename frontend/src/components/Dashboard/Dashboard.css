@@ -73,4 +73,91 @@
 
 .dashboard-error {
   color: #ff4444;
+}
+
+.playlist-no-image {
+  width: 160px;
+  height: 160px;
+  background-color: #282828;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 14px;
+}
+
+.dashboard-loading,
+.dashboard-error,
+.dashboard-connect {
+  text-align: center;
+  padding: 2rem;
+}
+
+.dashboard-error {
+  color: #ff4444;
+}
+
+.playlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.playlist-card {
+  background: #282828;
+  padding: 16px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.playlist-card:hover {
+  background: #383838;
+}
+
+.playlist-card img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.playlist-card h3 {
+  margin: 12px 0 4px;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playlist-card p {
+  margin: 0;
+  color: #b3b3b3;
+  font-size: 14px;
+}
+
+.dashboard-actions {
+  text-align: center;
+  margin: 20px 0 40px;
+}
+
+.wrapped-button {
+  background-color: #1DB954;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.wrapped-button:hover {
+  background-color: #1ed760;
+  transform: scale(1.05);
+}
+
+.wrapped-button:active {
+  transform: scale(0.98);
 } 

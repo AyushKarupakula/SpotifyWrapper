@@ -57,6 +57,11 @@ export const spotifyAPI = {
   authorize: () => api.get('/spotify/auth/'),
   callback: (data) => api.post('/spotify/callback/', data),
   getUserPlaylists: () => api.get('/spotify/playlists/'),
+  getLatestWrap: () => api.get('/spotify/wraps/latest/'),
+  getWrappedData: () => api.get('/spotify/wrapped/'),
+  getWrapHistory: () => api.get('/spotify/wraps/'),
+  getWrapDetail: (wrapId) => api.get(`/spotify/wraps/${wrapId}/`),
+  deleteWrap: (wrapId) => api.delete(`/spotify/wraps/${wrapId}/`),
 };
 
 export default api;

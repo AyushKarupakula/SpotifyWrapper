@@ -19,19 +19,20 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <Link to="/">Spotify Wrapper</Link>
+        <Link to="/">Spotify Wrapped</Link>
       </div>
       <div className="navbar-links">
         {user ? (
           <>
-            <Link to="/dashboard">Dashboard</Link>
-            <Link to="/profile">Profile</Link>
-            <button onClick={handleLogout} className="nav-button">Logout</button>
+            <Link to="/dashboard" className="nav-link">Dashboard</Link>
+            <Link to="/profile" className="nav-link">Profile</Link>
+            <Link to="/login" className="nav-link" onClick={handleLogout}>Logout</Link>
+            <Link to="/wrap-history" className="nav-link">Wrap History</Link>
           </>
         ) : (
           <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
+            <Link to="/login" className="nav-link">Login</Link>
+            <Link to="/register" className="nav-link">Register</Link>
           </>
         )}
       </div>
