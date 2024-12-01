@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { spotifyAPI } from '../../services/api';
 import './Wrapped.css';
 import confetti from 'canvas-confetti';
+import { useAuth } from '../../context/AuthContext';
 
 // Define components first
 export const NavigationButtons = ({ prev, next }) => (
@@ -121,9 +122,39 @@ export const triggerConfetti = () => {
   }, 400);
 };
 
+// Add this new component after NavigationButtons
+export const ShareDuoButton = ({ wrappedData, wrapId }) => {
+  const { user } = useAuth();
+  const [copied, setCopied] = useState(false);
+
+  const generateDuoLink = () => {
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/duo-wrapped/join/${wrapId}?sharedBy=${encodeURIComponent(user.username)}`;
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(generateDuoLink());
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <motion.button
+      className="share-duo-button"
+      onClick={handleCopyLink}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      disabled={!wrapId}
+    >
+      {copied ? 'Link Copied!' : 'Create Duo Wrapped Link'}
+    </motion.button>
+  );
+};
+
 function Wrapped() {
   const [currentSlide, setCurrentSlide] = useState(1);
   const [wrappedData, setWrappedData] = useState(null);
+  const [wrapId, setWrapId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -131,7 +162,8 @@ function Wrapped() {
     const fetchWrappedData = async () => {
       try {
         const response = await spotifyAPI.getWrappedData();
-        setWrappedData(response.data);
+        setWrappedData(response.data.wrap_data);
+        setWrapId(response.data.id);
       } catch (err) {
         setError('Failed to load your Wrapped data');
         console.error('Error fetching Wrapped data:', err);
@@ -350,6 +382,7 @@ function Wrapped() {
             <motion.p className="story-text">From timeless favorites to new discoveries...</motion.p>
             <motion.p className="story-text">Your musical journey continues to evolve</motion.p>
           </motion.div>
+          <ShareDuoButton wrappedData={wrappedData} wrapId={wrapId} />
           <NavigationButtons prev={previousSlide} />
         </motion.div>
       ),

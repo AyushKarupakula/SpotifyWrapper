@@ -186,7 +186,6 @@ def get_wrapped_data(request):
             )
 
         access_token = token_info['access_token']
-        print(f"Using access token: {access_token[:10]}...")  # Debug log
 
         # Fetch data with error handling
         wrapped_data = {
@@ -204,21 +203,18 @@ def get_wrapped_data(request):
             )
         }
 
-        # Log the structure of the data
-        print("Data structure:", {
-            k: f"{len(v.get('items', []))} items" 
-            for k, v in wrapped_data.items()
-        })
-
         # Save to database
         wrap = SpotifyWrap.objects.create(
             user=request.user,
             wrap_data=wrapped_data,
             title=f"Wrap - {datetime.now().strftime('%Y-%m-%d')}"
         )
-        print("Wrapped data saved to database", wrap)
 
-        return Response(wrapped_data)
+        # Return both the data and the wrap ID
+        return Response({
+            'id': wrap.id,  # Include the database ID
+            'wrap_data': wrapped_data
+        })
 
     except Exception as e:
         print(f"Error in get_wrapped_data: {str(e)}")
@@ -246,20 +242,26 @@ def get_wrap_history(request):
         )
 
 @api_view(['GET', 'DELETE'])
-@permission_classes([IsAuthenticated])
 def get_wrap_detail(request, wrap_id):
     try:
-        wrap = SpotifyWrap.objects.get(id=wrap_id, user=request.user)
-        
-        if request.method == 'DELETE':
-            wrap.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        # For GET requests, allow access to any wrap
+        if request.method == 'GET':
+            wrap = SpotifyWrap.objects.get(id=wrap_id)
+            return Response(wrap.wrap_data)
             
-        # GET request
-        return Response(wrap.wrap_data)
+        # For DELETE requests, maintain authentication and user check
+        if not request.user.is_authenticated:
+            return Response(
+                {'error': 'Authentication required for deletion'}, 
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        wrap = SpotifyWrap.objects.get(id=wrap_id, user=request.user)
+        wrap.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+            
     except SpotifyWrap.DoesNotExist:
         return Response(
-            {'error': 'Wrap not found or you don\'t have permission to access it'}, 
+            {'error': 'Wrap not found'}, 
             status=status.HTTP_404_NOT_FOUND
         )
 

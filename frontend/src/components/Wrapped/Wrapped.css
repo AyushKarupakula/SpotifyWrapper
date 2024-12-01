@@ -785,3 +785,65 @@ button:hover {
   margin: 0;
   text-align: center;
 }
+
+/* Duo Wrapped Styles */
+.duo-wrapped .wrapped-slide {
+  max-width: 1200px;
+}
+
+.duo-container {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  margin: 20px 0;
+}
+
+.user-wrap {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.user-wrap h3 {
+  color: #1DB954;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.duo-wrapped .artists-list,
+.duo-wrapped .tracks-list {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+/* Add a subtle scrollbar */
+.duo-wrapped .artists-list::-webkit-scrollbar,
+.duo-wrapped .tracks-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.duo-wrapped .artists-list::-webkit-scrollbar-thumb,
+.duo-wrapped .tracks-list::-webkit-scrollbar-thumb {
+  background: #1DB954;
+  border-radius: 5px;
+}
+
+.share-duo-button {
+  background: #1DB954;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-top: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.share-duo-button:hover {
+  background: #1ed760;
+}
