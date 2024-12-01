@@ -10,6 +10,7 @@ import Wrapped from './components/Wrapped/Wrapped';
 import WrapHistory from './components/WrapHistory/WrapHistory';
 import WrappedHistory from './components/Wrapped/WrappedHistory';
 import './App.css';
+import { LanguageProvider } from './context/LanguageContext';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -74,11 +75,13 @@ function AppContent() {
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </Router>
+    <LanguageProvider>
+      <Router>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </Router>
+    </LanguageProvider>
   );
 }
 

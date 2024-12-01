@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { LanguageSelector } from '../LanguageSelector/LanguageSelector';
 import './Navbar.css';
 
 function Navbar() {
@@ -26,8 +27,8 @@ function Navbar() {
           <>
             <Link to="/dashboard" className="nav-link">Dashboard</Link>
             <Link to="/profile" className="nav-link">Profile</Link>
-            <Link to="/login" className="nav-link" onClick={handleLogout}>Logout</Link>
             <Link to="/wrap-history" className="nav-link">Wrap History</Link>
+            <Link to="/login" className="nav-link" onClick={handleLogout}>Logout</Link>
           </>
         ) : (
           <>
@@ -35,6 +36,9 @@ function Navbar() {
             <Link to="/register" className="nav-link">Register</Link>
           </>
         )}
+      </div>
+      <div className="navbar-right">
+        <LanguageSelector />
       </div>
     </nav>
   );

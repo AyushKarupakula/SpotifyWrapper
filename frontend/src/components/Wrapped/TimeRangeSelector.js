@@ -1,16 +1,19 @@
 import React from 'react';
+import { useLanguage } from '../../context/LanguageContext';
 import './TimeRangeSelector.css';
 
 const TimeRangeSelector = ({ onSelect, selectedRange, loading }) => {
+  const { t } = useLanguage();
+
   const timeRanges = [
-    { value: 'short_term', label: 'Last 4 Weeks' },
-    { value: 'medium_term', label: 'Last 6 Months' },
-    { value: 'long_term', label: 'All Time' }
+    { value: 'short_term', label: t('timeRanges.shortTerm') },
+    { value: 'medium_term', label: t('timeRanges.mediumTerm') },
+    { value: 'long_term', label: t('timeRanges.longTerm') }
   ];
 
   return (
     <div className="time-range-selector">
-      <h2>Select Time Range</h2>
+      <h2>{t('welcome.selectTime')}</h2>
       <div className="range-buttons">
         {timeRanges.map(range => (
           <button
@@ -21,7 +24,7 @@ const TimeRangeSelector = ({ onSelect, selectedRange, loading }) => {
             onClick={() => onSelect(range.value)}
             disabled={loading}
           >
-            {loading && selectedRange === range.value ? 'Loading...' : range.label}
+            {loading && selectedRange === range.value ? t('common.loading') : range.label}
           </button>
         ))}
       </div>

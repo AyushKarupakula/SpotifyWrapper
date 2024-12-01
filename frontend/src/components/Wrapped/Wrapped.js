@@ -6,32 +6,38 @@ import confetti from 'canvas-confetti';
 import AudioPreview from '../AudioPreview/AudioPreview';
 import TimeRangeSelector from './TimeRangeSelector';
 import SongGuessingGame from '../Games/SongGuessingGame';
+import { ShareButton } from '../ShareButton/ShareButton';
+import { useLanguage } from '../../context/LanguageContext';
 
 // Define components first
-export const NavigationButtons = ({ prev, next }) => (
-  <div className="navigation-buttons">
-    {prev && (
-      <motion.button
-        onClick={prev}
-        className="nav-button"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        Previous
-      </motion.button>
-    )}
-    {next && (
-      <motion.button
-        onClick={next}
-        className="nav-button"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        Next
-      </motion.button>
-    )}
-  </div>
-);
+export const NavigationButtons = ({ prev, next }) => {
+  const { t } = useLanguage();
+  
+  return (
+    <div className="navigation-buttons">
+      {prev && (
+        <motion.button
+          onClick={prev}
+          className="nav-button"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {t('navigation.previous')}
+        </motion.button>
+      )}
+      {next && (
+        <motion.button
+          onClick={next}
+          className="nav-button"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {t('navigation.next')}
+        </motion.button>
+      )}
+    </div>
+  );
+};
 
 export const CountdownTrack = ({ track, number, isFinale = false }) => (
   <motion.div 
@@ -133,6 +139,7 @@ export const triggerConfetti = () => {
 };
 
 function Wrapped() {
+  const { t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(1);
   const [wrappedData, setWrappedData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -220,7 +227,7 @@ function Wrapped() {
     {
       component: (
         <motion.div className="wrapped-slide welcome-slide">
-          <motion.h1>Your Spotify Wrapped</motion.h1>
+          <motion.h1>{t('welcome.title')}</motion.h1>
           <TimeRangeSelector 
             onSelect={handleTimeRangeSelect}
             selectedRange={timeRange}
@@ -235,8 +242,8 @@ function Wrapped() {
     {
       component: (
         <motion.div className="wrapped-slide artist-highlight">
-          <motion.h2>Your Recent Obsessions</motion.h2>
-          <motion.p className="story-text">These artists have been on repeat lately...</motion.p>
+          <motion.h2>{t('slides.recentObsessions')}</motion.h2>
+          <motion.p className="story-text">{t('slides.artistsOnRepeat')}</motion.p>
           <div className="artists-list">
             {wrappedData?.topArtistsRecent?.items?.slice(0, 5).map((artist, index) => (
               <ArtistRow 
@@ -255,8 +262,8 @@ function Wrapped() {
     {
       component: (
         <motion.div className="wrapped-slide artist-highlight">
-          <motion.h2>Your All-Time Favorites</motion.h2>
-          <motion.p className="story-text">The artists who've been there through it all...</motion.p>
+          <motion.h2>{t('slides.allTimeFavorites')}</motion.h2>
+          <motion.p className="story-text">{t('slides.artistsThroughItAll')}</motion.p>
           <div className="artists-list">
             {wrappedData?.topArtistsAllTime?.items?.slice(0, 5).map((artist, index) => (
               <ArtistRow 
@@ -275,8 +282,8 @@ function Wrapped() {
     {
       component: (
         <motion.div className="wrapped-slide all-time-tracks">
-          <motion.h2>Your Timeless Tracks</motion.h2>
-          <motion.p className="story-text">The songs that never get old...</motion.p>
+          <motion.h2>{t('slides.timelessTracks')}</motion.h2>
+          <motion.p className="story-text">{t('slides.neverGetOld')}</motion.p>
           <div className="tracks-list">
             {wrappedData?.topTracksAllTime?.items?.slice(0, 5).map((track, index) => (
               <TrackRow 
@@ -297,9 +304,9 @@ function Wrapped() {
         <motion.div 
           className="wrapped-slide"  // Just using wrapped-slide class
         >
-          <motion.h2>But Wait...</motion.h2>
-          <motion.p className="story-text">Let's see what's been dominating your playlists recently</motion.p>
-          <motion.p className="story-text-small">Your top 3 tracks of the moment coming up...</motion.p>
+          <motion.h2>{t('slides.butWait')}</motion.h2>
+          <motion.p className="story-text">{t('slides.recentlyDominating')}</motion.p>
+          <motion.p className="story-text-small">{t('slides.top3Coming')}</motion.p>
           <NavigationButtons prev={previousSlide} next={nextSlide} />
         </motion.div>
       ),
@@ -309,8 +316,8 @@ function Wrapped() {
     {
       component: (
         <motion.div className="wrapped-slide countdown-slide">
-          <motion.h2>Starting With #3</motion.h2>
-          <motion.p className="story-text">A recent addition to your favorites...</motion.p>
+          <motion.h2>{t('slides.startingWith3')}</motion.h2>
+          <motion.p className="story-text">{t('slides.recentAddition')}</motion.p>
           {wrappedData?.topTracksRecent?.items?.[2] && (
             <CountdownTrack track={wrappedData.topTracksRecent.items[2]} number={3} />
           )}
@@ -323,8 +330,8 @@ function Wrapped() {
     {
       component: (
         <motion.div className="wrapped-slide">
-          <motion.h2>Your #2 Recent Obsession</motion.h2>
-          <motion.p className="story-text">A recent addition to your favorites...</motion.p>
+          <motion.h2>{t('slides.number2Obsession')}</motion.h2>
+          <motion.p className="story-text">{t('slides.recentAddition')}</motion.p>
           {wrappedData?.topTracksRecent?.items?.[1] && (
             <CountdownTrack track={wrappedData.topTracksRecent.items[1]} number={2} />
           )}
@@ -347,7 +354,7 @@ function Wrapped() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            Your #1 Obsession
+            {t('slides.number1Obsession')}
           </motion.h2>
           {wrappedData?.topTracksRecent?.items?.[0] && (
             <>
@@ -407,10 +414,11 @@ function Wrapped() {
     {
       component: (
         <motion.div className="wrapped-slide recap-slide">
-          <motion.h2>That's a Wrap!</motion.h2>
+          <motion.h2>{t('slides.thatsAWrap')}</motion.h2>
           <motion.div className="recap-content">
-            <motion.p className="story-text">From timeless favorites to new discoveries...</motion.p>
-            <motion.p className="story-text">Your musical journey continues to evolve</motion.p>
+            <motion.p className="story-text">{t('slides.fromTimeless')}</motion.p>
+            <motion.p className="story-text">{t('slides.journey')}</motion.p>
+            <ShareButton data={wrappedData} />
           </motion.div>
           <NavigationButtons prev={previousSlide} next={nextSlide} />
         </motion.div>
@@ -421,9 +429,9 @@ function Wrapped() {
     {
       component: (
         <motion.div className="wrapped-slide">
-          <motion.h2>Ready for a Challenge?</motion.h2>
-          <motion.p className="story-text">Let's see how well you know your top tracks!</motion.p>
-          <motion.p className="story-text-small">Listen to previews and guess the correct song</motion.p>
+          <motion.h2>{t('slides.readyForChallenge')}</motion.h2>
+          <motion.p className="story-text">{t('slides.testKnowledge')}</motion.p>
+          <motion.p className="story-text-small">{t('slides.listenAndGuess')}</motion.p>
           <NavigationButtons prev={previousSlide} next={nextSlide} />
         </motion.div>
       ),
@@ -452,7 +460,7 @@ function Wrapped() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            Game Results!
+            {t('slides.gameResults')}
           </motion.h2>
           <motion.div
             className="score-display"
@@ -460,7 +468,7 @@ function Wrapped() {
             animate={{ scale: 1 }}
             transition={{ delay: 0.3 }}
           >
-            <h3>You scored</h3>
+            <h3>{t('slides.youScored')}</h3>
             <div className="score">{gameScore}/3</div>
             <p>{
               gameScore === 3 ? "Perfect! You really know your music!" :
