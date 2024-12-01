@@ -9,6 +9,7 @@ import SpotifyCallback from './components/Spotify/SpotifyCallback';
 import Wrapped from './components/Wrapped/Wrapped';
 import WrapHistory from './components/WrapHistory/WrapHistory';
 import WrappedHistory from './components/Wrapped/WrappedHistory';
+import { ThemeProvider } from './context/ThemeContext';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -76,7 +77,9 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <AppContent />
+        <ThemeProvider>
+          <AppContent />
+        </ThemeProvider>
       </AuthProvider>
     </Router>
   );
