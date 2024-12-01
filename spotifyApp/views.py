@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
 from django.conf import settings
 import requests
@@ -30,7 +30,10 @@ class SpotifyAPI:
                 'playlist-read-private',
                 'playlist-modify-public',
                 'playlist-modify-private',
-                'user-top-read'
+                'user-top-read',
+                'streaming',
+                'user-read-playback-state',
+                'user-modify-playback-state'
             ])
         }
         return f"{self.auth_url}?{urlencode(params)}"
@@ -109,8 +112,16 @@ class SpotifyAPI:
         )
         return response.json()
 
+    def get_track_preview(self, track_id, access_token):
+        headers = self.get_headers(access_token)
+        response = requests.get(f'{self.base_url}/tracks/{track_id}', headers=headers)
+        if response.status_code == 200:
+            track_data = response.json()
+            return track_data.get('preview_url')
+        return None
+
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def spotify_auth(request):
     try:
         spotify = SpotifyAPI()
@@ -128,7 +139,7 @@ def spotify_auth(request):
         )
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def spotify_callback(request):
     try:
         code = request.data.get('code')
@@ -141,12 +152,12 @@ def spotify_callback(request):
         spotify = SpotifyAPI()
         token_info = spotify.get_access_token(code)
         
-        # Store token_info in session or database
+        # Store token_info in session
         request.session['spotify_token'] = token_info
         
         return Response({'message': 'Successfully authenticated with Spotify'})
     except Exception as e:
-        print("Spotify callback error:", str(e))  # For debugging
+        print("Spotify callback error:", str(e))
         return Response(
             {'error': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -186,16 +197,34 @@ def get_wrapped_data(request):
             )
 
         access_token = token_info['access_token']
-        print(f"Using access token: {access_token[:10]}...")  # Debug log
 
-        # Fetch data with error handling
+        # Fetch top tracks with preview URLs
+        top_tracks_recent = spotify.get_user_top_items(
+            access_token, 'tracks', 'short_term', 20
+        )
+        
+        # Debug print before processing
+        print("Raw track data:", json.dumps(top_tracks_recent['items'][0], indent=2))
+
+        # Ensure preview URLs are present
+        for track in top_tracks_recent.get('items', []):
+            if not track.get('preview_url'):
+                # Fetch individual track to get preview URL
+                track_response = requests.get(
+                    f'https://api.spotify.com/v1/tracks/{track["id"]}',
+                    headers={'Authorization': f'Bearer {access_token}'}
+                )
+                if track_response.status_code == 200:
+                    track_data = track_response.json()
+                    track['preview_url'] = track_data.get('preview_url')
+                    print(f"Updated preview URL for {track['name']}: {track['preview_url']}")
+
+        # Debug print after processing
+        print("Processed track data:", json.dumps(top_tracks_recent['items'][0], indent=2))
+
         wrapped_data = {
-            'topTracksRecent': spotify.get_user_top_items(
-                access_token, 'tracks', 'short_term', 20
-            ),
-            'topTracksAllTime': spotify.get_user_top_items(
-                access_token, 'tracks', 'long_term', 20
-            ),
+            'topTracksRecent': top_tracks_recent,
+            'topTracksAllTime': top_tracks_recent,  # Using same data for demo
             'topArtistsRecent': spotify.get_user_top_items(
                 access_token, 'artists', 'short_term', 20
             ),
@@ -203,20 +232,6 @@ def get_wrapped_data(request):
                 access_token, 'artists', 'long_term', 20
             )
         }
-
-        # Log the structure of the data
-        print("Data structure:", {
-            k: f"{len(v.get('items', []))} items" 
-            for k, v in wrapped_data.items()
-        })
-
-        # Save to database
-        wrap = SpotifyWrap.objects.create(
-            user=request.user,
-            wrap_data=wrapped_data,
-            title=f"Wrap - {datetime.now().strftime('%Y-%m-%d')}"
-        )
-        print("Wrapped data saved to database", wrap)
 
         return Response(wrapped_data)
 
@@ -301,5 +316,71 @@ def delete_wrap(request, wrap_id):
         print(f"Error deleting wrap: {str(e)}")  # Add logging
         return Response(
             {'error': 'Failed to delete wrap'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_wrapped_data(request):
+    try:
+        time_range = request.data.get('time_range', 'medium_term')
+        if time_range not in ['short_term', 'medium_term', 'long_term']:
+            return Response(
+                {'error': 'Invalid time range'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        spotify = SpotifyAPI()
+        token_info = request.session.get('spotify_token')
+        
+        if not token_info:
+            return Response(
+                {'error': 'No Spotify token found'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        access_token = token_info['access_token']
+
+        # Get data for the specified time range
+        top_tracks = spotify.get_user_top_items(
+            access_token, 'tracks', time_range, 20
+        )
+        top_artists = spotify.get_user_top_items(
+            access_token, 'artists', time_range, 20
+        )
+
+        # Fetch preview URLs for tracks
+        for track in top_tracks.get('items', []):
+            track_id = track['id']
+            headers = spotify.get_headers(access_token)
+            track_response = requests.get(
+                f'{spotify.base_url}/tracks/{track_id}',
+                headers=headers
+            )
+            if track_response.status_code == 200:
+                track_data = track_response.json()
+                track['preview_url'] = track_data.get('preview_url')
+                print(f"Track: {track['name']}, Preview URL: {track['preview_url']}")  # Debug log
+
+        wrapped_data = {
+            'topTracks': top_tracks,
+            'topArtists': top_artists,
+            'timeRange': time_range
+        }
+
+        # Save to database
+        wrap = SpotifyWrap.objects.create(
+            user=request.user,
+            wrap_data=wrapped_data,
+            title=f"Wrap - {time_range} - {datetime.now().strftime('%Y-%m-%d')}"
+        )
+
+        print("Wrapped Data:", json.dumps(wrapped_data, indent=2))  # Debug log
+        return Response(wrapped_data)
+
+    except Exception as e:
+        print(f"Error in create_wrapped_data: {str(e)}")
+        return Response(
+            {'error': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )

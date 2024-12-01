@@ -785,3 +785,86 @@ button:hover {
   margin: 0;
   text-align: center;
 }
+
+.track-row .audio-preview {
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  padding: 8px 15px;
+}
+
+.countdown-track .audio-preview {
+  margin-top: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  padding: 10px 20px;
+  width: 80%;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.finale-slide .audio-preview {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 30px;
+  padding: 12px 25px;
+  width: 90%;
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.audio-preview .play-button {
+  background: #1DB954;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.audio-preview .play-button:hover {
+  background: #1ed760;
+  transform: scale(1.1);
+}
+
+.audio-preview .progress-bar {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.audio-preview .progress-fill {
+  background: #1DB954;
+}
+
+.audio-preview .track-name {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.audio-preview-unavailable {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8em;
+  text-align: center;
+  padding: 5px;
+}
+
+.game-slide {
+  justify-content: flex-start;
+  padding-top: 30px;
+}
+
+.game-results {
+  text-align: center;
+}
+
+.score-display {
+  margin: 30px 0;
+  padding: 20px;
+  background: rgba(29, 185, 84, 0.1);
+  border-radius: 15px;
+  border: 2px solid rgba(29, 185, 84, 0.3);
+}
+
+.score-display .score {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #1DB954;
+  margin: 20px 0;
+}

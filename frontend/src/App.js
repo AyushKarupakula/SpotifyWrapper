@@ -66,6 +66,7 @@ function AppContent() {
             <WrapHistory />
           </ProtectedRoute>
         } />
+        <Route path="/callback" element={<SpotifyCallback />} />
       </Routes>
     </div>
   );

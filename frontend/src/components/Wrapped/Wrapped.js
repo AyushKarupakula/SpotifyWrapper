@@ -3,6 +3,9 @@ import { motion } from 'framer-motion';
 import { spotifyAPI } from '../../services/api';
 import './Wrapped.css';
 import confetti from 'canvas-confetti';
+import AudioPreview from '../AudioPreview/AudioPreview';
+import TimeRangeSelector from './TimeRangeSelector';
+import SongGuessingGame from '../Games/SongGuessingGame';
 
 // Define components first
 export const NavigationButtons = ({ prev, next }) => (
@@ -46,6 +49,10 @@ export const CountdownTrack = ({ track, number, isFinale = false }) => (
     <div className="track-info">
       <h3>{track.name}</h3>
       <p>{track.artists[0].name}</p>
+      <AudioPreview 
+        previewUrl={track.preview_url}
+        trackName={track.name}
+      />
     </div>
   </motion.div>
 );
@@ -88,6 +95,10 @@ export const TrackRow = ({ track, rank }) => (
     <div className="track-info">
       <h3>{track.name}</h3>
       <p className="artist-name">{track.artists[0].name}</p>
+      <AudioPreview 
+        previewUrl={track.preview_url}
+        trackName={track.name}
+      />
     </div>
   </motion.div>
 );
@@ -124,49 +135,98 @@ export const triggerConfetti = () => {
 function Wrapped() {
   const [currentSlide, setCurrentSlide] = useState(1);
   const [wrappedData, setWrappedData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [loadingTimeRange, setLoadingTimeRange] = useState(false);
   const [error, setError] = useState(null);
+  const [timeRange, setTimeRange] = useState('medium_term');
+  const [gameScore, setGameScore] = useState(null);
 
   useEffect(() => {
-    const fetchWrappedData = async () => {
-      try {
-        const response = await spotifyAPI.getWrappedData();
-        setWrappedData(response.data);
-      } catch (err) {
-        setError('Failed to load your Wrapped data');
-        console.error('Error fetching Wrapped data:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWrappedData();
+    createWrapped(timeRange);
   }, []);
+
+  const createWrapped = async (selectedRange) => {
+    setLoadingTimeRange(true);
+    setError(null);
+    try {
+      const response = await spotifyAPI.createWrapped(selectedRange);
+      console.log('Wrapped Data Response:', response.data);
+      
+      const formattedData = {
+        topTracksRecent: { items: response.data.topTracks.items },
+        topTracksAllTime: { items: response.data.topTracks.items },
+        topArtistsRecent: { items: response.data.topArtists.items },
+        topArtistsAllTime: { items: response.data.topArtists.items }
+      };
+      
+      setWrappedData(formattedData);
+    } catch (err) {
+      console.error('Error creating Wrapped:', err);
+      setError('Failed to create your Wrapped');
+    } finally {
+      setLoadingTimeRange(false);
+    }
+  };
+
+  const handleTimeRangeSelect = (range) => {
+    setTimeRange(range);
+    createWrapped(range);
+  };
 
   const nextSlide = () => {
     if (currentSlide < slides.length) {
-      setCurrentSlide(currentSlide + 1);
+      setLoading(true);
+      setTimeout(() => {
+        setCurrentSlide(currentSlide + 1);
+        setLoading(false);
+      }, 500);
     }
   };
 
   const previousSlide = () => {
     if (currentSlide > 1) {
-      setCurrentSlide(currentSlide - 1);
+      setLoading(true);
+      setTimeout(() => {
+        setCurrentSlide(currentSlide - 1);
+        setLoading(false);
+      }, 500);
     }
   };
 
-  if (loading) return <div className="wrapped-loading">Loading your musical journey...</div>;
-  if (error) return <div className="wrapped-error">{error}</div>;
-  if (!wrappedData) return <div className="wrapped-error">No data available</div>;
+  if (loading) {
+    return (
+      <div className="wrapped-container">
+        <div className="wrapped-slide">
+          <h2>Loading your musical journey...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="wrapped-container">
+        <div className="wrapped-slide">
+          <h2>Oops!</h2>
+          <p>{error}</p>
+          <button onClick={() => createWrapped(timeRange)}>Try Again</button>
+        </div>
+      </div>
+    );
+  }
 
   const slides = [
-    // Slide 1: Intro
+    // Slide 1: Intro with TimeRangeSelector
     {
       component: (
         <motion.div className="wrapped-slide welcome-slide">
-          <motion.h1>Your 2024 Wrapped</motion.h1>
-          <motion.p>Let's dive into the soundtrack of your year...</motion.p>
-          <NavigationButtons next={nextSlide} />
+          <motion.h1>Your Spotify Wrapped</motion.h1>
+          <TimeRangeSelector 
+            onSelect={handleTimeRangeSelect}
+            selectedRange={timeRange}
+            loading={loadingTimeRange}
+          />
+          {wrappedData && <NavigationButtons next={nextSlide} />}
         </motion.div>
       ),
     },
@@ -289,14 +349,6 @@ function Wrapped() {
           >
             Your #1 Obsession
           </motion.h2>
-          <motion.p 
-            className="story-text"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            The song you just can't get enough of...
-          </motion.p>
           {wrappedData?.topTracksRecent?.items?.[0] && (
             <>
               <motion.img 
@@ -334,6 +386,16 @@ function Wrapped() {
               >
                 {wrappedData.topTracksRecent.items[0].artists[0].name}
               </motion.p>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <AudioPreview 
+                  previewUrl={wrappedData.topTracksRecent.items[0].preview_url}
+                  trackName={wrappedData.topTracksRecent.items[0].name}
+                />
+              </motion.div>
             </>
           )}
           <NavigationButtons prev={previousSlide} next={nextSlide} />
@@ -350,10 +412,67 @@ function Wrapped() {
             <motion.p className="story-text">From timeless favorites to new discoveries...</motion.p>
             <motion.p className="story-text">Your musical journey continues to evolve</motion.p>
           </motion.div>
-          <NavigationButtons prev={previousSlide} />
+          <NavigationButtons prev={previousSlide} next={nextSlide} />
         </motion.div>
       ),
     },
+
+    // Slide 10: Game Introduction
+    {
+      component: (
+        <motion.div className="wrapped-slide">
+          <motion.h2>Ready for a Challenge?</motion.h2>
+          <motion.p className="story-text">Let's see how well you know your top tracks!</motion.p>
+          <motion.p className="story-text-small">Listen to previews and guess the correct song</motion.p>
+          <NavigationButtons prev={previousSlide} next={nextSlide} />
+        </motion.div>
+      ),
+    },
+
+    // Slide 11: Game
+    {
+      component: (
+        <motion.div className="wrapped-slide game-slide">
+          <SongGuessingGame 
+            tracks={wrappedData?.topTracksRecent?.items || []}
+            onComplete={(score) => {
+              setGameScore(score);
+              nextSlide();
+            }}
+          />
+        </motion.div>
+      ),
+    },
+
+    // Slide 12: Game Results
+    {
+      component: (
+        <motion.div className="wrapped-slide game-results">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            Game Results!
+          </motion.h2>
+          <motion.div
+            className="score-display"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <h3>You scored</h3>
+            <div className="score">{gameScore}/3</div>
+            <p>{
+              gameScore === 3 ? "Perfect! You really know your music!" :
+              gameScore === 2 ? "Great job! You're quite familiar with your top tracks!" :
+              gameScore === 1 ? "Not bad! Keep listening to discover more!" :
+              "Time to spend more time with your favorite tracks!"
+            }</p>
+          </motion.div>
+          <NavigationButtons prev={previousSlide} />
+        </motion.div>
+      ),
+    }
   ];
 
   return (
