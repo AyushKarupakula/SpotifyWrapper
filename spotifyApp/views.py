@@ -318,6 +318,10 @@ def fetch_spotify_data(user_id):
         auth=(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET),
     )
     access_token = auth_response.json().get("access_token")
+    
+    #debugging
+    print("Spotify Access Token:", access_token)
+
 
     user_url = f"https://api.spotify.com/v1/users/{user_id}/top/artists"
     headers = {"Authorization": f"Bearer {access_token}"}
@@ -326,28 +330,26 @@ def fetch_spotify_data(user_id):
     # Extract genres
     if response.status_code == 200:
         genres = [genre for artist in response.json().get("items", []) for genre in artist.get("genres", [])]
+        # Debugging: print the genres fetched from Spotify
+        print("Fetched Spotify Genres:", genres)
         return list(set(genres))
     return []
 
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def generate_personality_description(request):
-    try:
-        # Step 1: Retrieve latest wrap data
-        latest_wrap = SpotifyWrap.objects.filter(user=request.user).latest('date_generated')
-        wrap_data = latest_wrap.wrap_data
+    """Generate personality description using Spotify data and OpenAI."""
+    if request.method == "POST":
+        user_id = request.POST.get("user_id")
 
-        # Extract genres
-        genres = []
-        for artist_data in wrap_data.get('topArtistsAllTime', {}).get('items', []):
-            genres.extend(artist_data.get('genres', []))
-        genres = list(set(genres))
-
+        # Fetch genres from Spotify
+        genres = fetch_spotify_data(user_id)
         if not genres:
-            return JsonResponse({"error": "No genres found in your Spotify data"}, status=400)
+            return JsonResponse({"error": "Failed to fetch Spotify data or no genres found"}, status=400)
 
-        # Step 2: Generate personality description using OpenAI
+        # Debugging: print genres before sending to OpenAI
+        print("Genres sent to OpenAI:", genres)
+
+        # Generate description using OpenAI API
         prompt = f"Describe how someone who listens to {', '.join(genres)} tends to act, think, and dress."
         openai_url = "https://api.openai.com/v1/completions"
         response = requests.post(
@@ -362,13 +364,7 @@ def generate_personality_description(request):
 
         if response.status_code == 200:
             description = response.json().get("choices", [{}])[0].get("text", "").strip()
+            # Debugging: print OpenAI response
+            print("OpenAI Response:", description)
             return JsonResponse({"description": description})
-        else:
-            return JsonResponse({"error": "Failed to generate description with OpenAI"}, status=500)
-
-    except SpotifyWrap.DoesNotExist:
-        return JsonResponse({"error": "No Spotify data found. Please connect your account and generate a wrap."}, status=404)
-    except requests.exceptions.RequestException as e:
-        return JsonResponse({"error": f"Failed to connect to OpenAI API: {str(e)}"}, status=500)
-    except Exception as e:
-        return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
+        return JsonResponse({"error": "Failed to generate description"}, status=500)
