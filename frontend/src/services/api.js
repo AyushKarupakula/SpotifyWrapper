@@ -51,6 +51,7 @@ export const authAPI = {
   register: (userData) => api.post('/auth/register/', userData),
   logout: () => api.post('/auth/logout/'),
   checkAuth: () => api.get('/auth/user/'),
+  deleteAccount: () => api.post('/auth/delete_account/'),
 };
 
 export const spotifyAPI = {

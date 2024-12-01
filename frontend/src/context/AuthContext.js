@@ -53,6 +53,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const deleteAccount = async () => {
+    try {
+      await authAPI.deleteAccount();
+      setUser(null);
+    } catch (error) {
+      console.error('Account deletion error:', error);
+      throw error;
+    }
+  };
+
   return (
     <AuthContext.Provider value={{ 
       user, 
@@ -60,6 +70,7 @@ export const AuthProvider = ({ children }) => {
       register, 
       login, 
       logout,
+      deleteAccount,
       isSpotifyAuthenticated,
       setIsSpotifyAuthenticated 
     }}>
