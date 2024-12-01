@@ -239,8 +239,8 @@
 
 /* Navigation Buttons */
 button {
-    background: #1DB954;
-    color: white;
+    background: var(--button-background);
+    color: var(--text-color);
     border: none;
     padding: 12px 30px;
     border-radius: 25px;
