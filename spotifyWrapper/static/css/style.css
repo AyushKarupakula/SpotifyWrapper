@@ -22,10 +22,29 @@ header .nav-item {
 header .nav-link {
     color: #fff;
     text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    margin: 0 10px;
+    display: inline-block;
 }
 
-header .nav-link:hover {
-    color: #ccc;
+header .nav-link:not(.logout) {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+header .nav-link:not(.logout):hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+header .nav-link.logout {
+    background-color: transparent;
+    border: 2px solid #fff;
+}
+
+header .nav-link.logout:hover {
+    background-color: #fff;
+    color: pink;
 }
 
 /* Style the navbar */
@@ -40,10 +59,11 @@ header .nav-link:hover {
     margin: 0;
     padding: 0;
     display: flex;
+    align-items: center;
 }
 
 .navbar-nav li {
-    margin-right: 20px;
+    margin: 0;
 }
 
 /* Add to existing CSS */

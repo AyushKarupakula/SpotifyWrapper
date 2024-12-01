@@ -22,6 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('userAuth.urls')),
     path('api/spotify/', include('spotifyApp.urls')),
-    # Redirect all other requests to React frontend
+    path('spotify/callback/', include('spotifyApp.urls')),  # Add this line
     path('', RedirectView.as_view(url='http://localhost:3000')),
 ]

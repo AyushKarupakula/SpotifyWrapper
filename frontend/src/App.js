@@ -6,6 +6,9 @@ import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import Dashboard from './components/Dashboard/Dashboard';
 import SpotifyCallback from './components/Spotify/SpotifyCallback';
+import Wrapped from './components/Wrapped/Wrapped';
+import WrapHistory from './components/WrapHistory/WrapHistory';
+import WrappedHistory from './components/Wrapped/WrappedHistory';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -48,6 +51,21 @@ function AppContent() {
           </ProtectedRoute>
         } />
         <Route path="/spotify/callback" element={<SpotifyCallback />} />
+        <Route path="/wrapped" element={
+          <ProtectedRoute>
+            <Wrapped />
+          </ProtectedRoute>
+        } />
+        <Route path="/wrapped/:wrapId" element={
+          <ProtectedRoute>
+            <WrappedHistory />
+          </ProtectedRoute>
+        } />
+        <Route path="/wrap-history" element={
+          <ProtectedRoute>
+            <WrapHistory />
+          </ProtectedRoute>
+        } />
       </Routes>
     </div>
   );

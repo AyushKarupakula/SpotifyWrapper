@@ -154,47 +154,11 @@ print("SPOTIFY_REDIRECT_URI:", SPOTIFY_REDIRECT_URI)
 
 print("BASE_DIR:", BASE_DIR)
 
-# Allow React dev server during development
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
-
-CORS_ALLOW_CREDENTIALS = True
-
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-]
-
-# API URLs will be prefixed with /api/
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-    ],
-}
-
-# Add or update these settings
+# CORS and Security Settings
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-]
-CSRF_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_HTTPONLY = False
-SESSION_COOKIE_HTTPONLY = True
-
-# If you're in development, you might want to add:
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
-
-# Add these settings
-CORS_ALLOW_ALL_ORIGINS = True  # Only for development
-CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -207,17 +171,26 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-# Update CORS settings
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
-
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
 ]
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = False
+SESSION_COOKIE_HTTPONLY = True
 
-# Make sure DEBUG is True for development
+# Development settings - set to False in production
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
 DEBUG = True
-
-# Add localhost to ALLOWED_HOSTS
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+# API URLs will be prefixed with /api/
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}
