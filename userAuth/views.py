@@ -72,3 +72,10 @@ def user_view(request):
 @permission_classes([AllowAny])
 def csrf_token(request):
     return Response({'csrfToken': get_token(request)})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def delete_account(request):
+    user = request.user
+    user.delete()
+    return Response({'message': 'Account deleted successfully'}, status=200)
