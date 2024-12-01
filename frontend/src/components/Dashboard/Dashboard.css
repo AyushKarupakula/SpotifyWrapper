@@ -113,7 +113,7 @@
 }
 
 .playlist-card:hover {
-  background: #383838;
+  background: var(--background-color3);
 }
 
 .playlist-card img {
@@ -143,8 +143,8 @@
 }
 
 .wrapped-button {
-  background-color: #1DB954;
-  color: white;
+  background-color: var(--button-background);
+  color: var(--text-color);
   border: none;
   padding: 12px 24px;
   border-radius: 20px;
@@ -155,7 +155,8 @@
 }
 
 .wrapped-button:hover {
-  background-color: #1ed760;
+  background-color: var(--button-hover);
+  color: var(--button-hover-text);
   transform: scale(1.05);
 }
 

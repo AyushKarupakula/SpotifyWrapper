@@ -1,6 +1,6 @@
 .wrapped-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+    background: linear-gradient(135deg, var(--button-background) 0%, var(--background-color) 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -30,7 +30,7 @@
 .welcome-slide h1 {
     font-size: 3.5rem;
     margin-bottom: 20px;
-    background: linear-gradient(45deg, #1DB954, #fff);
+    background: linear-gradient(45deg, var(--button-background), #fff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -72,7 +72,7 @@
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    box-shadow: 0 0 20px rgba(29, 185, 84, 0.3);
+    box-shadow: 0 0 20px var(--button-background);
 }
 
 /* Songs Slide */
@@ -253,10 +253,10 @@ button {
 }
 
 button:hover {
-    background: #fff;
-    color: #1DB954;
+    background: var(--button-hover);
+    color: var(--button-hover-text);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(29, 185, 84, 0.3);
+    box-shadow: 0 5px 15px var(--button-background);
 }
 
 /* Summary Slide */
@@ -274,7 +274,7 @@ button:hover {
 
 /* Loading and Error States */
 .wrapped-loading, .wrapped-error {
-    color: white;
+    color: var(--text-color);
     font-size: 1.5rem;
     text-align: center;
     padding: 40px;
@@ -324,7 +324,7 @@ button:hover {
 .artist-rank {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #1DB954;
+    color: var(--button-background);
     margin-bottom: 5px;
 }
 
@@ -368,7 +368,7 @@ button:hover {
     height: 200px;
     border-radius: 50%;
     object-fit: cover;
-    box-shadow: 0 0 30px rgba(29, 185, 84, 0.3);
+    box-shadow: 0 0 30px var(--button-background);
 }
 
 /* Image glow effect */
@@ -486,7 +486,7 @@ button:hover {
     width: 250px;
     height: 250px;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px var(--background-color2);
     object-fit: cover;
 }
 
@@ -542,18 +542,18 @@ button:hover {
 }
 
 .nav-button {
-  background: #1DB954;
+  background: var(--button-background);
   border: none;
   padding: 0.8rem 1.5rem;
   border-radius: 20px;
-  color: white;
+  color: var(--text-color);
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .nav-button:hover {
-  background: #1ed760;
+  background: var(--button-hover);
 }
 
 .artist-card img {
@@ -561,7 +561,7 @@ button:hover {
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px var(--background-color);
 }
 
 .featured-artist img {
@@ -569,7 +569,7 @@ button:hover {
   height: 250px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px var(--background-color);
 }
 
 .countdown-track img {
@@ -577,7 +577,7 @@ button:hover {
   height: 250px;
   border-radius: 8px;
   object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px var(--background-color);
 }
 
 .featured-track img {
@@ -585,7 +585,7 @@ button:hover {
   height: 250px;
   border-radius: 8px;
   object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px var(--background-color);
 }
 
 .tracks-grid {

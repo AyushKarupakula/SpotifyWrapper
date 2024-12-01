@@ -1,6 +1,7 @@
 :root {
   --background-color: #121212;
   --background-color2: #282828;
+  --background-color3: #363636;
   --text-color: #ffffff;
   --button-background: #1DB954;
   --button-hover: #ffffff;
@@ -16,6 +17,7 @@
 [data-theme="light"] {
   --background-color: #ffffff;
   --background-color2: #f0f0f0;
+  --background-color3: #dfdfdf;
   --text-color: #121212;
   --button-background: #1e90ff;
   --button-hover: #121212;

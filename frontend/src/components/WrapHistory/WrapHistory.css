@@ -12,7 +12,7 @@
 }
 
 .wrap-card {
-  background: #282828;
+  background: var(--background-color2);
   padding: 1.5rem;
   border-radius: 8px;
   transition: transform 0.2s;
@@ -41,6 +41,7 @@
 
 .view-wrap-button:hover {
   background: var(--button-hover);
+  color: var(--button-hover-text);
 }
 
 .no-wraps {
@@ -72,7 +73,7 @@
 }
 
 .delete-icon {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--text-color) !important;
   transition: color 0.2s ease !important;
 }
 
