@@ -1,0 +1,20 @@
+# Core Django Framework
+Django>=5.1.0
+
+# Django REST Framework
+djangorestframework>=3.14.0
+
+# For handling CORS
+django-cors-headers>=4.3.0
+
+# For environment variables
+python-dotenv>=1.0.0
+
+# For handling HTTP requests
+requests>=2.31.0
+
+# For better development experience
+django-debug-toolbar>=4.2.0
+
+# For handling static files in production
+whitenoise>=6.6.0

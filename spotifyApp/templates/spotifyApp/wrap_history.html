@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="wrap-history">
+    <h1>Your Wrap History</h1>
+    
+    {% if wraps %}
+        <div class="wrap-grid">
+            {% for wrap in wraps %}
+                <div class="wrap-card">
+                    <h3>{{ wrap.title }}</h3>
+                    <p>Generated on: {{ wrap.date_generated|date:"F j, Y" }}</p>
+                    <a href="{% url 'spotify:view-wrap' wrap.id %}" class="btn btn-primary">View Wrap</a>
+                    <form method="post" action="{% url 'spotify:delete-wrap' wrap.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You haven't generated any wraps yet!</p>
+        <a href="{% url 'spotify:generate-wrap' %}" class="btn btn-primary">Generate Your First Wrap</a>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Account</h1>
+    <p>Welcome, {{ user.username }}! Please link your Spotify account!</p>
+    <p><a href="{% url 'spotify:spotify-login' %}" class="btn btn-primary">Link Spotify Account</a></p>
+    <p><a href="{% url 'delete' %}" class="btn btn-danger">Delete Account</a></p>
+{% endblock %}

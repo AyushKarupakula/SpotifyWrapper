@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="wrap-container">
+    <!-- Slide 1: Welcome -->
+    <div class="wrap-slide" id="slide-1">
+        <h1>Your Spotify Wrap</h1>
+        <p>Let's see what you've been listening to...</p>
+    </div>
+
+    <!-- Slide 2: Top Artists -->
+    <div class="wrap-slide" id="slide-2">
+        <h2>Your Top Artists</h2>
+        <div class="artist-grid">
+            {% for artist in wrap.wrap_data.top_artists|slice:":5" %}
+                <div class="artist-card">
+                    <img src="{{ artist.images.0.url }}" alt="{{ artist.name }}">
+                    <h3>{{ artist.name }}</h3>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Slide 3: Top Tracks -->
+    <div class="wrap-slide" id="slide-3">
+        <h2>Your Top Tracks</h2>
+        <div class="track-list">
+            {% for track in wrap.wrap_data.top_tracks|slice:":10" %}
+                <div class="track-item">
+                    <img src="{{ track.album.images.0.url }}" alt="{{ track.name }}">
+                    <div class="track-info">
+                        <h3>{{ track.name }}</h3>
+                        <p>{{ track.artists.0.name }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Slide 4: Recently Played -->
+    <div class="wrap-slide" id="slide-4">
+        <h2>Recently Played</h2>
+        <div class="recent-tracks">
+            {% for item in wrap.wrap_data.recently_played|slice:":5" %}
+                <div class="recent-track">
+                    <img src="{{ item.track.album.images.0.url }}" alt="{{ item.track.name }}">
+                    <div class="track-info">
+                        <h3>{{ item.track.name }}</h3>
+                        <p>{{ item.track.artists.0.name }}</p>
+                        <small>Played: {{ item.played_at|date:"F j, Y" }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="wrap-controls">
+    <button id="prevButton" onclick="previousSlide()">Previous</button>
+    <button id="nextButton" onclick="nextSlide()">Next</button>
+</div>
+
+{% block extra_js %}
+<script src="{% static 'js/wrap.js' %}"></script>
+{% endblock %}
+{% endblock %}
