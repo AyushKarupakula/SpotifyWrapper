@@ -9,7 +9,6 @@ import SpotifyCallback from './components/Spotify/SpotifyCallback';
 import Wrapped from './components/Wrapped/Wrapped';
 import WrapHistory from './components/WrapHistory/WrapHistory';
 import WrappedHistory from './components/Wrapped/WrappedHistory';
-import DuoWrapped from './components/DuoWrapped/DuoWrapped';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -65,11 +64,6 @@ function AppContent() {
         <Route path="/wrap-history" element={
           <ProtectedRoute>
             <WrapHistory />
-          </ProtectedRoute>
-        } />
-        <Route path="/duo-wrapped/join/:wrapId" element={
-          <ProtectedRoute>
-            <DuoWrapped />
           </ProtectedRoute>
         } />
         <Route path="/callback" element={<SpotifyCallback />} />

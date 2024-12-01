@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { spotifyAPI } from '../../services/api';
 import './Wrapped.css';
 import confetti from 'canvas-confetti';
-import { useAuth } from '../../context/AuthContext';
 import AudioPreview from '../AudioPreview/AudioPreview';
 import TimeRangeSelector from './TimeRangeSelector';
 import SongGuessingGame from '../Games/SongGuessingGame';
@@ -36,7 +35,7 @@ export const NavigationButtons = ({ prev, next }) => (
 
 export const CountdownTrack = ({ track, number, isFinale = false }) => (
   <motion.div 
-    className={`countdown-track`}
+    className={`countdown-track}`}
     initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
     transition={{ duration: 0.5 }}
@@ -58,6 +57,7 @@ export const CountdownTrack = ({ track, number, isFinale = false }) => (
   </motion.div>
 );
 
+// Helper component for artist rows
 export const ArtistRow = ({ artist, rank }) => (
   <motion.div 
     className="artist-row"
@@ -78,6 +78,7 @@ export const ArtistRow = ({ artist, rank }) => (
   </motion.div>
 );
 
+// Helper component for track rows (similar to ArtistRow)
 export const TrackRow = ({ track, rank }) => (
   <motion.div 
     className="track-row"
@@ -102,13 +103,16 @@ export const TrackRow = ({ track, rank }) => (
   </motion.div>
 );
 
+// Simplified confetti function
 export const triggerConfetti = () => {
+  // Initial burst
   confetti({
     particleCount: 100,
     spread: 70,
     origin: { y: 0.6 }
   });
   
+  // Follow-up bursts
   setTimeout(() => {
     confetti({
       particleCount: 50,
@@ -128,38 +132,9 @@ export const triggerConfetti = () => {
   }, 400);
 };
 
-export const ShareDuoButton = ({ wrappedData, wrapId }) => {
-  const { user } = useAuth();
-  const [copied, setCopied] = useState(false);
-
-  const generateDuoLink = () => {
-    const baseUrl = window.location.origin;
-    return `${baseUrl}/duo-wrapped/join/${wrapId}?sharedBy=${encodeURIComponent(user.username)}`;
-  };
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(generateDuoLink());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <motion.button
-      className="share-duo-button"
-      onClick={handleCopyLink}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      disabled={!wrapId}
-    >
-      {copied ? 'Link Copied!' : 'Create Duo Wrapped Link'}
-    </motion.button>
-  );
-};
-
 function Wrapped() {
   const [currentSlide, setCurrentSlide] = useState(1);
   const [wrappedData, setWrappedData] = useState(null);
-  const [wrapId, setWrapId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingTimeRange, setLoadingTimeRange] = useState(false);
   const [error, setError] = useState(null);
@@ -167,20 +142,7 @@ function Wrapped() {
   const [gameScore, setGameScore] = useState(null);
 
   useEffect(() => {
-    const fetchWrappedData = async () => {
-      try {
-        const response = await spotifyAPI.getWrappedData();
-        setWrappedData(response.data.wrap_data);
-        setWrapId(response.data.id);
-      } catch (err) {
-        setError('Failed to load your Wrapped data');
-        console.error('Error fetching Wrapped data:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWrappedData();
+    createWrapped(timeRange);
   }, []);
 
   const createWrapped = async (selectedRange) => {
@@ -188,12 +150,15 @@ function Wrapped() {
     setError(null);
     try {
       const response = await spotifyAPI.createWrapped(selectedRange);
+      console.log('Wrapped Data Response:', response.data);
+      
       const formattedData = {
         topTracksRecent: { items: response.data.topTracks.items },
         topTracksAllTime: { items: response.data.topTracks.items },
         topArtistsRecent: { items: response.data.topArtists.items },
         topArtistsAllTime: { items: response.data.topArtists.items }
       };
+      
       setWrappedData(formattedData);
     } catch (err) {
       console.error('Error creating Wrapped:', err);
@@ -228,10 +193,286 @@ function Wrapped() {
     }
   };
 
-  // Error and Loading states omitted for brevity
+  if (loading) {
+    return (
+      <div className="wrapped-container">
+        <div className="wrapped-slide">
+          <h2>Loading your musical journey...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="wrapped-container">
+        <div className="wrapped-slide">
+          <h2>Oops!</h2>
+          <p>{error}</p>
+          <button onClick={() => createWrapped(timeRange)}>Try Again</button>
+        </div>
+      </div>
+    );
+  }
 
   const slides = [
-    // Slides content here...
+    // Slide 1: Intro with TimeRangeSelector
+    {
+      component: (
+        <motion.div className="wrapped-slide welcome-slide">
+          <motion.h1>Your Spotify Wrapped</motion.h1>
+          <TimeRangeSelector 
+            onSelect={handleTimeRangeSelect}
+            selectedRange={timeRange}
+            loading={loadingTimeRange}
+          />
+          {wrappedData && <NavigationButtons next={nextSlide} />}
+        </motion.div>
+      ),
+    },
+
+    // Slide 2: Current Favorite Artists
+    {
+      component: (
+        <motion.div className="wrapped-slide artist-highlight">
+          <motion.h2>Your Recent Obsessions</motion.h2>
+          <motion.p className="story-text">These artists have been on repeat lately...</motion.p>
+          <div className="artists-list">
+            {wrappedData?.topArtistsRecent?.items?.slice(0, 5).map((artist, index) => (
+              <ArtistRow 
+                key={artist.id} 
+                artist={artist} 
+                rank={index}
+              />
+            ))}
+          </div>
+          <NavigationButtons prev={previousSlide} next={nextSlide} />
+        </motion.div>
+      ),
+    },
+
+    // Slide 3: All-Time Favorite Artists
+    {
+      component: (
+        <motion.div className="wrapped-slide artist-highlight">
+          <motion.h2>Your All-Time Favorites</motion.h2>
+          <motion.p className="story-text">The artists who've been there through it all...</motion.p>
+          <div className="artists-list">
+            {wrappedData?.topArtistsAllTime?.items?.slice(0, 5).map((artist, index) => (
+              <ArtistRow 
+                key={artist.id} 
+                artist={artist} 
+                rank={index}
+              />
+            ))}
+          </div>
+          <NavigationButtons prev={previousSlide} next={nextSlide} />
+        </motion.div>
+      ),
+    },
+
+    // Slide 4: All-Time Favorite Songs
+    {
+      component: (
+        <motion.div className="wrapped-slide all-time-tracks">
+          <motion.h2>Your Timeless Tracks</motion.h2>
+          <motion.p className="story-text">The songs that never get old...</motion.p>
+          <div className="tracks-list">
+            {wrappedData?.topTracksAllTime?.items?.slice(0, 5).map((track, index) => (
+              <TrackRow 
+                key={track.id} 
+                track={track} 
+                rank={index}
+              />
+            ))}
+          </div>
+          <NavigationButtons prev={previousSlide} next={nextSlide} />
+        </motion.div>
+      ),
+    },
+
+    // Slide 5: Intro to Recent Favorites (But Wait slide)
+    {
+      component: (
+        <motion.div 
+          className="wrapped-slide"  // Just using wrapped-slide class
+        >
+          <motion.h2>But Wait...</motion.h2>
+          <motion.p className="story-text">Let's see what's been dominating your playlists recently</motion.p>
+          <motion.p className="story-text-small">Your top 3 tracks of the moment coming up...</motion.p>
+          <NavigationButtons prev={previousSlide} next={nextSlide} />
+        </motion.div>
+      ),
+    },
+
+    // Slide 6: #3 Recent Favorite
+    {
+      component: (
+        <motion.div className="wrapped-slide countdown-slide">
+          <motion.h2>Starting With #3</motion.h2>
+          <motion.p className="story-text">A recent addition to your favorites...</motion.p>
+          {wrappedData?.topTracksRecent?.items?.[2] && (
+            <CountdownTrack track={wrappedData.topTracksRecent.items[2]} number={3} />
+          )}
+          <NavigationButtons prev={previousSlide} next={nextSlide} />
+        </motion.div>
+      ),
+    },
+
+    // Slide 7: #2 Recent Favorite
+    {
+      component: (
+        <motion.div className="wrapped-slide">
+          <motion.h2>Your #2 Recent Obsession</motion.h2>
+          <motion.p className="story-text">A recent addition to your favorites...</motion.p>
+          {wrappedData?.topTracksRecent?.items?.[1] && (
+            <CountdownTrack track={wrappedData.topTracksRecent.items[1]} number={2} />
+          )}
+          <NavigationButtons prev={previousSlide} next={nextSlide} />
+        </motion.div>
+      ),
+    },
+
+    // Slide 8: #1 Recent Favorite
+    {
+      component: (
+        <motion.div 
+          className="wrapped-slide"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          onAnimationComplete={() => setTimeout(triggerConfetti, 100)}
+        >
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            Your #1 Obsession
+          </motion.h2>
+          {wrappedData?.topTracksRecent?.items?.[0] && (
+            <>
+              <motion.img 
+                src={wrappedData.topTracksRecent.items[0].album.images[0]?.url} 
+                alt="" 
+                className="track-image"
+                initial={{ scale: 0.9 }}
+                animate={{ 
+                  scale: 1,
+                  rotate: [0, -3, 3, -3, 0]
+                }}
+                transition={{
+                  duration: 1,
+                  ease: "easeOut",
+                  rotate: {
+                    duration: 1.5,
+                    ease: "easeInOut",
+                    delay: 0.2
+                  }
+                }}
+              />
+              <motion.h3 
+                className="finale-song-name"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                {wrappedData.topTracksRecent.items[0].name}
+              </motion.h3>
+              <motion.p 
+                className="finale-artist-name"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                {wrappedData.topTracksRecent.items[0].artists[0].name}
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <AudioPreview 
+                  previewUrl={wrappedData.topTracksRecent.items[0].preview_url}
+                  trackName={wrappedData.topTracksRecent.items[0].name}
+                />
+              </motion.div>
+            </>
+          )}
+          <NavigationButtons prev={previousSlide} next={nextSlide} />
+        </motion.div>
+      ),
+    },
+
+    // Slide 9: Recap
+    {
+      component: (
+        <motion.div className="wrapped-slide recap-slide">
+          <motion.h2>That's a Wrap!</motion.h2>
+          <motion.div className="recap-content">
+            <motion.p className="story-text">From timeless favorites to new discoveries...</motion.p>
+            <motion.p className="story-text">Your musical journey continues to evolve</motion.p>
+          </motion.div>
+          <NavigationButtons prev={previousSlide} next={nextSlide} />
+        </motion.div>
+      ),
+    },
+
+    // Slide 10: Game Introduction
+    {
+      component: (
+        <motion.div className="wrapped-slide">
+          <motion.h2>Ready for a Challenge?</motion.h2>
+          <motion.p className="story-text">Let's see how well you know your top tracks!</motion.p>
+          <motion.p className="story-text-small">Listen to previews and guess the correct song</motion.p>
+          <NavigationButtons prev={previousSlide} next={nextSlide} />
+        </motion.div>
+      ),
+    },
+
+    // Slide 11: Game
+    {
+      component: (
+        <motion.div className="wrapped-slide game-slide">
+          <SongGuessingGame 
+            tracks={wrappedData?.topTracksRecent?.items || []}
+            onComplete={(score) => {
+              setGameScore(score);
+              nextSlide();
+            }}
+          />
+        </motion.div>
+      ),
+    },
+
+    // Slide 12: Game Results
+    {
+      component: (
+        <motion.div className="wrapped-slide game-results">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            Game Results!
+          </motion.h2>
+          <motion.div
+            className="score-display"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <h3>You scored</h3>
+            <div className="score">{gameScore}/3</div>
+            <p>{
+              gameScore === 3 ? "Perfect! You really know your music!" :
+              gameScore === 2 ? "Great job! You're quite familiar with your top tracks!" :
+              gameScore === 1 ? "Not bad! Keep listening to discover more!" :
+              "Time to spend more time with your favorite tracks!"
+            }</p>
+          </motion.div>
+          <NavigationButtons prev={previousSlide} />
+        </motion.div>
+      ),
+    }
   ];
 
   return (
