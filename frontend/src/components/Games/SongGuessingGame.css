@@ -1,0 +1,114 @@
+.time-machine-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  color: white;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.track-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.album-cover {
+  width: 200px;
+  height: 200px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.album-cover:hover {
+  transform: scale(1.05);
+}
+
+.track-info {
+  text-align: center;
+}
+
+.track-info h3 {
+  margin: 5px 0;
+  font-size: 1.5rem;
+}
+
+.question {
+  font-size: 1.2rem;
+  margin: 20px 0;
+  color: #1DB954;
+}
+
+.year-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.year-button {
+  padding: 15px 30px;
+  border: 2px solid #1DB954;
+  border-radius: 10px;
+  background: rgba(29, 185, 84, 0.1);
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.year-button:hover:not(:disabled) {
+  background: rgba(29, 185, 84, 0.2);
+  transform: scale(1.02);
+}
+
+.year-button.correct {
+  background: #1DB954;
+  border-color: #1DB954;
+  animation: pulse 1s;
+}
+
+.year-button.incorrect {
+  background: #dc3545;
+  border-color: #dc3545;
+  animation: shake 0.5s;
+}
+
+.feedback {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@media (max-width: 600px) {
+  .year-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .album-cover {
+    width: 150px;
+    height: 150px;
+  }
+} 

@@ -72,6 +72,7 @@ function AppContent() {
             <DuoWrapped />
           </ProtectedRoute>
         } />
+        <Route path="/callback" element={<SpotifyCallback />} />
       </Routes>
     </div>
   );

@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
 from django.conf import settings
 import requests
@@ -9,6 +9,7 @@ import json
 from urllib.parse import urlencode
 from datetime import datetime
 from .models import SpotifyWrap
+
 
 class SpotifyAPI:
     def __init__(self):
@@ -30,7 +31,10 @@ class SpotifyAPI:
                 'playlist-read-private',
                 'playlist-modify-public',
                 'playlist-modify-private',
-                'user-top-read'
+                'user-top-read',
+                'streaming',
+                'user-read-playback-state',
+                'user-modify-playback-state'
             ])
         }
         return f"{self.auth_url}?{urlencode(params)}"
@@ -57,11 +61,7 @@ class SpotifyAPI:
         raise Exception(f"Token Error: {response.text}")
 
     def get_playlists(self, access_token):
-        headers = {
-            'Authorization': f'Bearer {access_token}',
-            'Content-Type': 'application/json'
-        }
-        
+        headers = self.get_headers(access_token)
         response = requests.get(f"{self.base_url}/me/playlists", headers=headers)
         if response.status_code == 200:
             return response.json()
@@ -74,10 +74,6 @@ class SpotifyAPI:
         }
 
     def get_user_top_items(self, access_token, item_type, time_range='medium_term', limit=20):
-        """
-        item_type: 'tracks' or 'artists'
-        time_range: 'short_term' (4 weeks) or 'medium_term' (6 months) or 'long_term' (years)
-        """
         headers = self.get_headers(access_token)
         response = requests.get(
             f'{self.base_url}/me/top/{item_type}',
@@ -100,57 +96,41 @@ class SpotifyAPI:
         response = requests.get(f'{self.base_url}/me', headers=headers)
         return response.json()
 
-    def get_user_playlists(self, access_token, limit=50):
+    def get_track_preview(self, track_id, access_token):
         headers = self.get_headers(access_token)
-        response = requests.get(
-            f'{self.base_url}/me/playlists',
-            headers=headers,
-            params={'limit': limit}
-        )
-        return response.json()
+        response = requests.get(f'{self.base_url}/tracks/{track_id}', headers=headers)
+        if response.status_code == 200:
+            track_data = response.json()
+            return track_data.get('preview_url')
+        return None
+
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def spotify_auth(request):
     try:
         spotify = SpotifyAPI()
         auth_url = spotify.get_auth_url()
-        print("Debug Info:")
-        print(f"Client ID: {settings.SPOTIFY_CLIENT_ID}")
-        print(f"Redirect URI: {settings.SPOTIFY_REDIRECT_URI}")
-        print(f"Generated Auth URL: {auth_url}")
         return Response({'auth_url': auth_url})
     except Exception as e:
-        print(f"Error in spotify_auth: {str(e)}")
-        return Response(
-            {'error': str(e)},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def spotify_callback(request):
     try:
         code = request.data.get('code')
         if not code:
-            return Response(
-                {'error': 'No authorization code provided'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({'error': 'No authorization code provided'}, status=status.HTTP_400_BAD_REQUEST)
 
         spotify = SpotifyAPI()
         token_info = spotify.get_access_token(code)
-        
-        # Store token_info in session or database
         request.session['spotify_token'] = token_info
-        
         return Response({'message': 'Successfully authenticated with Spotify'})
     except Exception as e:
-        print("Spotify callback error:", str(e))  # For debugging
-        return Response(
-            {'error': str(e)},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -158,19 +138,14 @@ def get_playlists(request):
     try:
         token_info = request.session.get('spotify_token')
         if not token_info:
-            return Response(
-                {'error': 'Not authenticated with Spotify'},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
+            return Response({'error': 'Not authenticated with Spotify'}, status=status.HTTP_401_UNAUTHORIZED)
 
         spotify = SpotifyAPI()
         playlists = spotify.get_playlists(token_info['access_token'])
         return Response(playlists['items'])
     except Exception as e:
-        return Response(
-            {'error': str(e)},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -178,130 +153,38 @@ def get_wrapped_data(request):
     try:
         spotify = SpotifyAPI()
         token_info = request.session.get('spotify_token')
-        
         if not token_info:
-            return Response(
-                {'error': 'No Spotify token found. Please reconnect your account.'},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
+            return Response({'error': 'No Spotify token found'}, status=status.HTTP_401_UNAUTHORIZED)
 
         access_token = token_info['access_token']
 
-        # Fetch data with error handling
+        top_tracks_recent = spotify.get_user_top_items(access_token, 'tracks', 'short_term', 20)
+
         wrapped_data = {
-            'topTracksRecent': spotify.get_user_top_items(
-                access_token, 'tracks', 'short_term', 20
-            ),
-            'topTracksAllTime': spotify.get_user_top_items(
-                access_token, 'tracks', 'long_term', 20
-            ),
-            'topArtistsRecent': spotify.get_user_top_items(
-                access_token, 'artists', 'short_term', 20
-            ),
-            'topArtistsAllTime': spotify.get_user_top_items(
-                access_token, 'artists', 'long_term', 20
-            )
+            'topTracksRecent': top_tracks_recent,
+            'topTracksAllTime': top_tracks_recent,  # For demonstration
+            'topArtistsRecent': spotify.get_user_top_items(access_token, 'artists', 'short_term', 20),
+            'topArtistsAllTime': spotify.get_user_top_items(access_token, 'artists', 'long_term', 20)
         }
 
-        # Save to database
         wrap = SpotifyWrap.objects.create(
             user=request.user,
             wrap_data=wrapped_data,
             title=f"Wrap - {datetime.now().strftime('%Y-%m-%d')}"
         )
 
-        # Return both the data and the wrap ID
-        return Response({
-            'id': wrap.id,  # Include the database ID
-            'wrap_data': wrapped_data
-        })
+        return Response({'id': wrap.id, 'wrap_data': wrapped_data})
 
     except Exception as e:
-        print(f"Error in get_wrapped_data: {str(e)}")
-        return Response(
-            {'error': str(e)},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_wrap_history(request):
     try:
         wraps = SpotifyWrap.objects.filter(user=request.user).order_by('-date_generated')
-        data = [{
-            'id': wrap.id,
-            'date_generated': wrap.date_generated.isoformat(),
-            'title': wrap.title
-        } for wrap in wraps]
+        data = [{'id': wrap.id, 'date_generated': wrap.date_generated.isoformat(), 'title': wrap.title} for wrap in wraps]
         return Response({'wraps': data})
     except Exception as e:
-        print(f"Error in get_wrap_history: {str(e)}")  # Debug log
-        return Response(
-            {'error': 'Failed to fetch wrap history'}, 
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
-
-@api_view(['GET', 'DELETE'])
-def get_wrap_detail(request, wrap_id):
-    try:
-        # For GET requests, allow access to any wrap
-        if request.method == 'GET':
-            wrap = SpotifyWrap.objects.get(id=wrap_id)
-            return Response(wrap.wrap_data)
-            
-        # For DELETE requests, maintain authentication and user check
-        if not request.user.is_authenticated:
-            return Response(
-                {'error': 'Authentication required for deletion'}, 
-                status=status.HTTP_401_UNAUTHORIZED
-            )
-        wrap = SpotifyWrap.objects.get(id=wrap_id, user=request.user)
-        wrap.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-            
-    except SpotifyWrap.DoesNotExist:
-        return Response(
-            {'error': 'Wrap not found'}, 
-            status=status.HTTP_404_NOT_FOUND
-        )
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_latest_wrap(request):
-    try:
-        latest_wrap = SpotifyWrap.objects.filter(user=request.user).latest('date_generated')
-        wrap_data = latest_wrap.wrap_data
-        
-        # Ensure the data structure is correct
-        formatted_data = {
-            'topTracksRecent': wrap_data.get('topTracksRecent', {}).get('items', []),
-            'topTracksAllTime': wrap_data.get('topTracksAllTime', {}).get('items', []),
-            'topArtistsRecent': wrap_data.get('topArtistsRecent', {}).get('items', []),
-            'topArtistsAllTime': wrap_data.get('topArtistsAllTime', {}).get('items', [])
-        }
-        
-        return Response(formatted_data)
-    except SpotifyWrap.DoesNotExist:
-        return Response(
-            {'error': 'No wrap found'}, 
-            status=status.HTTP_404_NOT_FOUND
-        )
-
-@api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
-def delete_wrap(request, wrap_id):
-    try:
-        wrap = SpotifyWrap.objects.get(id=wrap_id, user=request.user)
-        wrap.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    except SpotifyWrap.DoesNotExist:
-        return Response(
-            {'error': 'Wrap not found or you don\'t have permission to delete it'},
-            status=status.HTTP_404_NOT_FOUND
-        )
-    except Exception as e:
-        print(f"Error deleting wrap: {str(e)}")  # Add logging
-        return Response(
-            {'error': 'Failed to delete wrap'},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+        return Response({'error': 'Failed to fetch wrap history'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
