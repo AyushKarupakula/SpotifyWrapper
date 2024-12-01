@@ -12,7 +12,7 @@
 }
 
 .playlist-card {
-  background: #282828;
+  background: var(--background-color2);
   padding: 1rem;
   border-radius: 8px;
   transition: transform 0.2s;
@@ -42,15 +42,15 @@
 .spotify-auth {
   text-align: center;
   padding: 2rem;
-  background: #282828;
+  background: var(--background-color2);
   border-radius: 8px;
   max-width: 400px;
   margin: 2rem auto;
 }
 
 .spotify-auth-button {
-  background-color: #1DB954;
-  color: white;
+  background-color: var(--button-background);
+  color: var(--text-color);
   border: none;
   padding: 1rem 2rem;
   border-radius: 25px;
@@ -61,7 +61,8 @@
 }
 
 .spotify-auth-button:hover {
-  background-color: #1ed760;
+  background-color: var(--button-hover);
+  color: var(--button-hover-text);
 }
 
 .dashboard-loading,
@@ -78,7 +79,7 @@
 .playlist-no-image {
   width: 160px;
   height: 160px;
-  background-color: #282828;
+  background-color: var(--background-color2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,14 +106,14 @@
 }
 
 .playlist-card {
-  background: #282828;
+  background: var(--background-color2);
   padding: 16px;
   border-radius: 8px;
   transition: background-color 0.3s;
 }
 
 .playlist-card:hover {
-  background: #383838;
+  background: var(--background-color3);
 }
 
 .playlist-card img {
@@ -142,8 +143,8 @@
 }
 
 .wrapped-button {
-  background-color: #1DB954;
-  color: white;
+  background-color: var(--button-background);
+  color: var(--text-color);
   border: none;
   padding: 12px 24px;
   border-radius: 20px;
@@ -154,7 +155,8 @@
 }
 
 .wrapped-button:hover {
-  background-color: #1ed760;
+  background-color: var(--button-hover);
+  color: var(--button-hover-text);
   transform: scale(1.05);
 }
 

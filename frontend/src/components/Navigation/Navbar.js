@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { LanguageSelector } from '../LanguageSelector/LanguageSelector';
+import { useTheme } from '../../context/ThemeContext'; // Import theme context
+import { LanguageSelector } from '../LanguageSelector/LanguageSelector'; // Import language selector
 import './Navbar.css';
 
 function Navbar() {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme(); // Use theme context
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -18,7 +20,7 @@ function Navbar() {
   };
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${theme}`}>
       <div className="navbar-brand">
         <Link to="/">Spotify Wrapped</Link>
       </div>
@@ -36,6 +38,9 @@ function Navbar() {
             <Link to="/register" className="nav-link">Register</Link>
           </>
         )}
+        <button onClick={toggleTheme} className="nav-buttona">
+          {theme === 'light' ? '☼' : '☾'}
+        </button>
       </div>
       <div className="navbar-right">
         <LanguageSelector />
@@ -44,4 +49,4 @@ function Navbar() {
   );
 }
 
-export default Navbar; 
+export default Navbar;

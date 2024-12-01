@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navigation/Navbar';
+import Profile from './components/Auth/Profile';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -9,6 +10,7 @@ import SpotifyCallback from './components/Spotify/SpotifyCallback';
 import Wrapped from './components/Wrapped/Wrapped';
 import WrapHistory from './components/WrapHistory/WrapHistory';
 import WrappedHistory from './components/Wrapped/WrappedHistory';
+import { ThemeProvider } from './context/ThemeContext';
 import './App.css';
 import { LanguageProvider } from './context/LanguageContext';
 
@@ -46,6 +48,7 @@ function AppContent() {
         } />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/dashboard" element={
           <ProtectedRoute>
             <Dashboard />

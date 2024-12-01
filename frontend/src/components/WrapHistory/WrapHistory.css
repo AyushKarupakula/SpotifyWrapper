@@ -12,7 +12,7 @@
 }
 
 .wrap-card {
-  background: #282828;
+  background: var(--background-color2);
   padding: 1.5rem;
   border-radius: 8px;
   transition: transform 0.2s;
@@ -25,13 +25,13 @@
 
 .wrap-card h3 {
   margin: 0 0 1rem 0;
-  color: #1DB954;
+  color: var(--text-color);
 }
 
 .view-wrap-button {
   display: inline-block;
-  background: #1DB954;
-  color: white;
+  background: var(--button-background);
+  color: var(--text-color);
   padding: 0.8rem 1.5rem;
   border-radius: 20px;
   text-decoration: none;
@@ -40,7 +40,8 @@
 }
 
 .view-wrap-button:hover {
-  background: #1ed760;
+  background: var(--button-hover);
+  color: var(--button-hover-text);
 }
 
 .no-wraps {
@@ -50,8 +51,8 @@
 
 .generate-wrap-button {
   display: inline-block;
-  background: #1DB954;
-  color: white;
+  background: var(--button-background);
+  color: var(--text-color);
   padding: 1rem 2rem;
   border-radius: 25px;
   text-decoration: none;
@@ -72,7 +73,7 @@
 }
 
 .delete-icon {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--text-color) !important;
   transition: color 0.2s ease !important;
 }
 
