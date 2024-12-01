@@ -1,0 +1,137 @@
+ /* Duo Wrapped Container */
+.duo-wrapped .wrapped-slide {
+    max-width: 1400px;
+    width: 90vw;
+    padding: 40px;
+}
+
+.duo-container {
+    display: flex;
+    gap: 3rem;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.user-wrap {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    min-width: 45%;
+}
+
+.user-wrap h3 {
+    color: #1DB954;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+/* Scrollable Lists */
+.duo-wrapped .artists-list,
+.duo-wrapped .tracks-list {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 15px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Scrollbar Styling */
+.duo-wrapped .artists-list::-webkit-scrollbar,
+.duo-wrapped .tracks-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.duo-wrapped .artists-list::-webkit-scrollbar-track,
+.duo-wrapped .tracks-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.duo-wrapped .artists-list::-webkit-scrollbar-thumb,
+.duo-wrapped .tracks-list::-webkit-scrollbar-thumb {
+    background: #1DB954;
+    border-radius: 3px;
+}
+
+/* Share Button */
+.share-duo-button {
+    background: #1DB954;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 30px auto 0;
+}
+
+.share-duo-button:hover {
+    background: #1ed760;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(29, 185, 84, 0.3);
+}
+
+/* Comparison Stats */
+.comparison-stats {
+    text-align: center;
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+}
+
+.stat-item {
+    margin: 15px 0;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 1.2rem;
+    color: #1DB954;
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .duo-wrapped .wrapped-slide {
+        width: 95vw;
+        padding: 20px;
+    }
+    
+    .duo-container {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .user-wrap {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .duo-wrapped .wrapped-slide {
+        padding: 15px;
+    }
+    
+    .user-wrap h3 {
+        font-size: 1.5rem;
+    }
+    
+    .duo-wrapped .artists-list,
+    .duo-wrapped .tracks-list {
+        max-height: 400px;
+    }
+}
