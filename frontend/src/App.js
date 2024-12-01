@@ -12,6 +12,7 @@ import WrapHistory from './components/WrapHistory/WrapHistory';
 import WrappedHistory from './components/Wrapped/WrappedHistory';
 import { ThemeProvider } from './context/ThemeContext';
 import './App.css';
+import { LanguageProvider } from './context/LanguageContext';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -77,13 +78,13 @@ function AppContent() {
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <ThemeProvider>
+    <LanguageProvider>
+      <Router>
+        <AuthProvider>
           <AppContent />
-        </ThemeProvider>
-      </AuthProvider>
-    </Router>
+        </AuthProvider>
+      </Router>
+    </LanguageProvider>
   );
 }
 

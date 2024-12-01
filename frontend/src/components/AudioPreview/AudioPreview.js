@@ -68,11 +68,7 @@ const AudioPreview = ({ previewUrl, trackName }) => {
   };
 
   if (!previewUrl) {
-    return (
-      <div className="audio-preview-unavailable">
-        Preview unavailable for "{trackName}"
-      </div>
-    );
+    return null;
   }
 
   return (

@@ -1,9 +1,10 @@
 .navbar {
-  background-color: var(--navbar-background);
-  padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1rem 2rem;
+  background-color: #282828; /* Preserved from main */
+  color: white;
 }
 
 .navbar-brand {
@@ -12,17 +13,18 @@
 }
 
 .navbar-brand a {
-  color: var(--navbar-link-color);
+  color: var(--navbar-link-color); /* Variable preserved from main */
   text-decoration: none;
 }
 
 .navbar-links {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
+  align-items: center;
 }
 
 .navbar-links a {
-  color: var(--navbar-link-color);
+  color: var(--navbar-link-color); /* Variable preserved */
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -30,19 +32,19 @@
 }
 
 .navbar-links a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1); /* Hover effect preserved */
 }
 
 .nav-buttona {
-  background-color: var(--navbar-background);
+  background-color: var(--navbar-background); /* Preserved from main */
   color: var(--navbar-link-color);
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 20px;
   transition: background-color 0.3s;
-  margin-top: 0;
+  margin-top: 0; /* Adjusted from main */
 }
 
 .nav-buttona:hover {
   background-color: rgba(255, 255, 255, 0.1);
-} 
+}
