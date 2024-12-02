@@ -1,3 +1,4 @@
+
 # SpotifyWrapper
 
 A Django web application that provides detailed Spotify listening statistics and visualizations, similar to Spotify Wrapped but available year-round.
