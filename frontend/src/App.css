@@ -68,6 +68,7 @@
 
 .auth-buttons .auth-button:hover {
   background-color: var(--button-hover);
+  color: var(--background-color);
 }
 
 /* Navbar Styles */
