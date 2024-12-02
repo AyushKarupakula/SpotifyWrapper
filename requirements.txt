@@ -1,3 +1,4 @@
+
 # Core Django Framework
 Django>=5.1.0
 
