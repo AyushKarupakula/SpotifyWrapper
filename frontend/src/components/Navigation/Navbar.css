@@ -3,7 +3,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #282828; /* Preserved from main */
+  background-color: var(--background-color2); /* Preserved from main */
   color: white;
 }
 
@@ -25,6 +25,7 @@
 
 .navbar-links a {
   color: var(--navbar-link-color); /* Variable preserved */
+  background-color: var(--background-color3);
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -36,7 +37,7 @@
 }
 
 .nav-buttona {
-  background-color: var(--navbar-background); /* Preserved from main */
+  background-color: var(--background-color3); /* Preserved from main */
   color: var(--navbar-link-color);
   text-decoration: none;
   padding: 0.5rem 1rem;

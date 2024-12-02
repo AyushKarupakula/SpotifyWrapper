@@ -12,7 +12,7 @@
 
 .range-button {
   padding: 10px 20px;
-  border: 2px solid #1DB954;
+  border: 2px solid var(--button-background);
   border-radius: 20px;
   background: transparent;
   color: white;
@@ -21,11 +21,11 @@
 }
 
 .range-button:hover {
-  background: rgba(29, 185, 84, 0.2);
+  background: var(--button-hover);
 }
 
 .range-button.selected {
-  background: #1DB954;
+  background: var(--button-background);
   color: white;
 }
 

@@ -8,6 +8,7 @@
   --button-hover-text: #1ED760;
 
   --form-background: #404040;
+  --window-background: #1DB954;
 
   --navbar-background: #1DB954;
   --navbar-link-color: white;
@@ -24,6 +25,7 @@
   --button-hover-text: #1e90ff;
 
   --form-background: #afafaf;
+  --window-background: #4285F4;
 
   --navbar-background: #1e90ff; /* Blue navbar background */
   --navbar-link-color: #121212; /* Darker link color for contrast */
