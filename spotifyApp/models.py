@@ -13,4 +13,14 @@ class SpotifyWrap(models.Model):
         ordering = ['-date_generated']
 
     def __str__(self):
+        """
+        String representation of the SpotifyWrap model instance.
+
+        This string is used in the Django admin interface to represent the
+        model instance. It includes the username of the User who owns the wrap
+        and the date the wrap was generated.
+
+        Returns:
+            str: A string representation of the SpotifyWrap instance.
+        """
         return f"{self.user.username}'s Wrap - {self.date_generated.strftime('%Y-%m-%d')}"
