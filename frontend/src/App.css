@@ -6,10 +6,10 @@
   --button-background: #1DB954;
   --button-hover: #ffffff;
   --button-hover-text: #1ED760;
-  
+
   --form-background: #404040;
   --window-background: #1DB954;
-  
+
   --navbar-background: #1DB954;
   --navbar-link-color: white;
   --navbar-hover-background: rgba(255, 255, 255, 0.1);
@@ -28,7 +28,7 @@
   --window-background: #4285F4;
 
   --navbar-background: #1e90ff; /* Blue navbar background */
-  --navbar-link-color: #121212;    /* Darker link color for contrast */
+  --navbar-link-color: #121212; /* Darker link color for contrast */
   --navbar-hover-background: rgba(0, 0, 0, 0.1);
 }
 
@@ -46,6 +46,8 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
+  position: relative; /* Ensure it sits above the background */
+  z-index: 1;
 }
 
 .auth-buttons {
@@ -66,4 +68,68 @@
 
 .auth-buttons .auth-button:hover {
   background-color: var(--button-hover);
-} 
+}
+
+/* Navbar Styles */
+.navbar {
+  position: relative;
+  z-index: 10; /* Bring navbar above the wave background */
+}
+
+/* Wave Effect */
+.wave-background {
+  position: absolute;
+  top: 0px; /* Start below the navbar */
+  left: 0;
+  width: 200%;
+  height: calc(100%); /* Subtract navbar height */
+  background: linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.7) 20%,
+    #1DB954 50%,
+    rgba(0, 0, 0, 0.7) 80%
+  );
+  animation: wave-animation 6s linear infinite;
+  z-index: -1; /* Place behind all other elements */
+}
+
+/* Wave Animation */
+@keyframes wave-animation {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Glowing Text */
+.glowing-text {
+  font-size: 3rem;
+  color: #000000; /* Black text */
+  text-shadow:
+    0 0 10px #ffffff,
+    0 0 20px #ffffff,
+    0 0 30px #ffffff,
+    0 0 40px #ffffff; /* White glow */
+  animation: glow-animation 3s infinite ease-in-out;
+}
+
+/* Glow Animation */
+@keyframes glow-animation {
+  0%,
+  100% {
+    text-shadow:
+      0 0 10px #ffffff,
+      0 0 20px #ffffff,
+      0 0 30px #ffffff,
+      0 0 40px #ffffff;
+  }
+  50% {
+    text-shadow:
+      0 0 5px #ffffff,
+      0 0 10px #ffffff,
+      0 0 20px #ffffff,
+      0 0 30px #ffffff;
+  }
+}
