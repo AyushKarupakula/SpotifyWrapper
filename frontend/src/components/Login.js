@@ -2,9 +2,26 @@ import React, { useState } from 'react';
 import { Box, Button, Container, Typography } from '@mui/material';
 import { spotifyService } from '../services/api';
 
+/**
+ * A simple login component that redirects to the Spotify authorization URL
+ * when the button is clicked. If the user is not authenticated, it displays
+ * a "Connect with Spotify" button. If the user is authenticated, it displays
+ * a "Connecting..." button that is disabled.
+ *
+ * @return {React.ReactElement} The login component.
+ */
 const Login = () => {
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Initiates Spotify login process.
+   *
+   * This function first calls the API to get the authorization URL.
+   * If the request is successful, the user is redirected to the authorization URL.
+   * If the request fails with an error, an error message is printed to the console.
+   *
+   * @async
+   */
   const handleSpotifyLogin = async () => {
     try {
       setLoading(true);

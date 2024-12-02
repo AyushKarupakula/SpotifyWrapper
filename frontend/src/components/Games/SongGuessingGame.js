@@ -2,6 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import './SongGuessingGame.css';
 
+/**
+ * SongGuessingGame
+ * A game that asks user to guess release year, album name, or artist collaboration
+ * for a given track. User earns points for correct answers and can play up to 3 rounds.
+ * After finishing the game, user can share the result on social media.
+ *
+ * @param {object} props
+ * @prop {array} tracks Array of track objects to be used in the game.
+ * @prop {function} onComplete Function to be called after user finishes the game.
+ * It takes one argument, the total score of the user.
+ * @returns {JSX.Element} The game component.
+ */
 const SongGuessingGame = ({ tracks, onComplete }) => {
   const [currentRound, setCurrentRound] = useState(0);
   const [score, setScore] = useState(0);
@@ -25,6 +37,16 @@ const SongGuessingGame = ({ tracks, onComplete }) => {
         }
         return [...new Set(years)].sort(() => Math.random() - 0.5).slice(0, 4);
       },
+/**
+ * Checks the provided answer against the actual release year of the track.
+ *
+ * @param {object} track - The track object containing album release date information.
+ * @param {number} answer - The year guessed by the user.
+ * @returns {object} An object containing:
+ * - {boolean} correct: Whether the guessed year is correct.
+ * - {number} points: The points awarded for the guess.
+ * - {string} message: Feedback message regarding the guess.
+ */
       checkAnswer: (track, answer) => {
         const actualYear = new Date(track.album.release_date).getFullYear();
         const diff = Math.abs(answer - actualYear);
@@ -36,6 +58,14 @@ const SongGuessingGame = ({ tracks, onComplete }) => {
     {
       type: 'albumName',
       question: 'Which album is this song from?',
+/**
+ * Generates a list of album name options for the user to choose from,
+ * including the correct album name and several incorrect options.
+ *
+ * @param {object} track - The track object containing the correct album name.
+ * @param {array} allTracks - An array of all track objects to source incorrect album names from.
+ * @returns {array} An array of album names, shuffled in random order, containing the correct album name and up to three unique incorrect options.
+ */
       getOptions: (track, allTracks) => {
         const correctAlbum = track.album.name;
         const otherAlbums = allTracks
@@ -46,6 +76,16 @@ const SongGuessingGame = ({ tracks, onComplete }) => {
           .sort(() => Math.random() - 0.5);
         return options;
       },
+/**
+ * Checks the provided answer against the actual album name of the track.
+ *
+ * @param {object} track - The track object containing the correct album name.
+ * @param {string} answer - The album name guessed by the user.
+ * @returns {object} An object containing:
+ * - {boolean} correct: Whether the guessed album name is correct.
+ * - {number} points: The points awarded for the guess.
+ * - {string} message: Feedback message regarding the guess.
+ */
       checkAnswer: (track, answer) => ({
         correct: answer === track.album.name,
         points: 2,
@@ -57,6 +97,17 @@ const SongGuessingGame = ({ tracks, onComplete }) => {
     {
       type: 'artistCollaboration',
       question: 'Who collaborated on this track?',
+/**
+ * Generates a list of collaborator options for the user to choose from.
+ * If the track has no collaborators, asks who didn't collaborate.
+ * If the track has collaborators, includes the correct combination and
+ * up to three other incorrect options, with the main artist and the
+ * correct/wrong collaborator(s) separated by "ft.".
+ *
+ * @param {object} track - The track object containing the correct collaborator(s).
+ * @param {array} allTracks - An array of all track objects to source incorrect collaborator(s) from.
+ * @returns {array} An array of collaborator options, shuffled in random order.
+ */
       getOptions: (track, allTracks) => {
         const correctArtists = track.artists.map(a => a.name);
         if (correctArtists.length === 1) {
@@ -83,6 +134,19 @@ const SongGuessingGame = ({ tracks, onComplete }) => {
           return options;
         }
       },
+/**
+ * Checks the user's answer against the correct answer, returning an object with
+ * the following properties:
+ *
+ * - correct: A boolean indicating whether the user's answer was correct
+ * - points: The number of points earned for the correct answer (2 in this case)
+ * - message: A string indicating the result, either 'Correct! +2 points' or
+ *   'Not quite! The correct answer is: <correct answer>'
+ *
+ * @param {object} track - The track object containing the correct artists.
+ * @param {string} answer - The user's answer.
+ * @returns {object} An object with the above properties.
+ */
       checkAnswer: (track, answer) => {
         const correctArtists = track.artists.map(a => a.name);
         const correctAnswer = correctArtists.length === 1 
@@ -102,6 +166,15 @@ const SongGuessingGame = ({ tracks, onComplete }) => {
   const getCurrentQuestion = () => questionTypes[currentRound % questionTypes.length];
   const getCurrentTrack = () => tracks[currentRound];
 
+/**
+ * Handles the user's guess by checking the answer against the current question.
+ * Updates the score and feedback based on the result. If the guess is correct,
+ * points are awarded, and the feedback indicates success; otherwise, it shows 
+ * the correct answer. After a delay, proceeds to the next round or completes 
+ * the game if it was the last round.
+ *
+ * @param {string} answer - The user's selected answer.
+ */
   const handleGuess = (answer) => {
     if (hasGuessed) return;
 

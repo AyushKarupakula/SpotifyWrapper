@@ -2,6 +2,12 @@ import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
+/**
+ * A basic navigation bar with links to the home page, my wraps, and
+ * the login page.
+ * 
+ * @returns {JSX.Element} The navigation bar
+ */
 const Navbar = () => {
   return (
     <AppBar position="static">

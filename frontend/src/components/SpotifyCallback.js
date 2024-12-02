@@ -2,11 +2,39 @@ import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+/**
+ * SpotifyCallback component handles the Spotify OAuth callback process.
+ * 
+ * This component extracts the authorization code from the URL parameters
+ * and sends it to the backend server to exchange for access tokens. If the
+ * authorization code is missing or if an error occurs during the exchange,
+ * the user is redirected to an error page. Upon successful authentication,
+ * the user is redirected to the dashboard.
+ * 
+ * Effects:
+ * - useEffect: Triggers the callback handling upon component mount.
+ * 
+ * Dependencies: useLocation, useNavigate, useEffect, axios
+ * 
+ * Returns a loading message while the authentication process is ongoing.
+ */
 const SpotifyCallback = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
+    /**
+     * Handles the Spotify OAuth callback process.
+     * 
+     * This function extracts the authorization code from the URL parameters
+     * and sends it to the backend server to exchange for access tokens. If the
+     * authorization code is missing or if an error occurs during the exchange,
+     * the user is redirected to an error page. Upon successful authentication,
+     * the user is redirected to the dashboard.
+     * 
+     * @async
+     * @returns {void}
+     */
     const handleCallback = async () => {
       try {
         // Get the code from URL parameters

@@ -63,6 +63,14 @@ export const spotifyAPI = {
   getWrapHistory: () => api.get('/spotify/wraps/'),
   getWrapDetail: (wrapId) => api.get(`/spotify/wraps/${wrapId}/`),
   deleteWrap: (wrapId) => api.delete(`/spotify/wraps/${wrapId}/`),
+  /**
+   * Creates a new SpotifyWrap for the given time range and updates the wrapped data state.
+   * The function fetches the top tracks and artists for the given time range, formats the response data
+   * into the expected format, and then updates the wrapped data state with the new data.
+   * The function also stores the new wrapped data in local storage, overwriting any existing wrapped history.
+   * @param {string} timeRange - The time range for which to create the Wrapped.
+   * @returns {Promise<void>}
+   */
   createWrapped: (timeRange) => 
     api.post('/spotify/wrapped/create/', 
       { time_range: timeRange },

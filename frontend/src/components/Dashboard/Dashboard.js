@@ -4,6 +4,27 @@ import { spotifyAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import './Dashboard.css';
 
+/**
+ * Dashboard component for displaying user playlists and Spotify authentication status.
+ * 
+ * This component manages Spotify authentication, fetches and displays the user's playlists, and provides UI for the user to connect to Spotify if not authenticated.
+ * 
+ * State Variables:
+ * - playlists: Array of user's playlists.
+ * - loading: Boolean indicating if the playlists are being loaded.
+ * - error: Error message in case of a failure.
+ * 
+ * Effects:
+ * - useEffect: Triggers Spotify authentication check on component mount.
+ * 
+ * Functions:
+ * - checkSpotifyAuth: Checks and updates Spotify authentication status.
+ * - handleSpotifyLogin: Initiates Spotify login process.
+ * - fetchPlaylists: Fetches user's playlists from Spotify API.
+ * 
+ * Conditional Rendering:
+ * - Displays loading screen, error message, Spotify connection prompt, or playlists based on current state.
+ */
 function Dashboard() {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,6 +36,16 @@ function Dashboard() {
     checkSpotifyAuth();
   }, []);
 
+  /**
+   * Checks Spotify authentication status and updates state accordingly.
+   * 
+   * This function first attempts to fetch the user's playlists from Spotify API.
+   * If the request is successful, the user is considered authenticated and the playlists are fetched.
+   * If the request fails with a 401 status code, the user is considered not authenticated.
+   * If the request fails with any other status code, an error message is set.
+   * 
+   * @async
+   */
   const checkSpotifyAuth = async () => {
     try {
       await spotifyAPI.getUserPlaylists();
@@ -30,6 +61,15 @@ function Dashboard() {
     }
   };
 
+  /**
+   * Initiates Spotify login process.
+   * 
+   * This function first fetches the authorization URL from the Spotify API.
+   * If the request is successful, the user is redirected to the authorization URL.
+   * If the request fails with an error, an error message is set.
+   * 
+   * @async
+   */
   const handleSpotifyLogin = async () => {
     try {
       const response = await spotifyAPI.authorize();
@@ -39,6 +79,15 @@ function Dashboard() {
     }
   };
 
+  /**
+   * Fetches user playlists from Spotify API.
+   * 
+   * This function first makes a request to the Spotify API to fetch the user's playlists.
+   * If the request is successful, the playlists are stored in the state and the loading state is disabled.
+   * If the request fails with an error, an error message is set and the loading state is disabled.
+   * 
+   * @async
+   */
   const fetchPlaylists = async () => {
     try {
       const response = await spotifyAPI.getUserPlaylists();
