@@ -8,6 +8,7 @@ import TimeRangeSelector from './TimeRangeSelector';
 import SongGuessingGame from '../Games/SongGuessingGame';
 import { ShareButton } from '../ShareButton/ShareButton';
 import { useLanguage } from '../../context/LanguageContext';
+import { FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa';
 
 // Define components first
 export const NavigationButtons = ({ prev, next }) => {
@@ -170,12 +171,11 @@ function Wrapped() {
   const [loading, setLoading] = useState(false);
   const [loadingTimeRange, setLoadingTimeRange] = useState(false);
   const [error, setError] = useState(null);
-  const [timeRange, setTimeRange] = useState('medium_term');
+  const [timeRange, setTimeRange] = useState(null);
   const [gameScore, setGameScore] = useState(null);
   const [direction, setDirection] = useState(0);
 
   useEffect(() => {
-    setTimeRange('medium_term');
   }, []);
 
   const handleTimeRangeSelect = async (range) => {
@@ -457,7 +457,55 @@ function Wrapped() {
           <motion.div className="recap-content">
             <motion.p className="story-text">{t('slides.fromTimeless')}</motion.p>
             <motion.p className="story-text">{t('slides.journey')}</motion.p>
-            <ShareButton data={wrappedData} />
+            
+            <div className="share-options">
+              <ShareButton />
+              <div className="social-buttons">
+                <motion.a
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Check out my Spotify Wrapped! 🎵\n\nMy top artists and tracks of the moment:\n')}&url=${encodeURIComponent(window.location.href)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-button twitter"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  aria-label="Share on Twitter"
+                >
+                  <FaTwitter size={24} color="white" />
+                </motion.a>
+                
+                <motion.a
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-button linkedin"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  aria-label="Share on LinkedIn"
+                >
+                  <FaLinkedin size={24} color="white" />
+                </motion.a>
+                
+                <motion.button
+                  onClick={() => {
+                    // Create a message for Instagram Stories
+                    const text = `Check out my Spotify Wrapped!\n\nTop Artist: ${wrappedData?.topArtistsRecent?.items[0]?.name}\nTop Track: ${wrappedData?.topTracksRecent?.items[0]?.name}`;
+                    
+                    // Open Instagram app if on mobile, otherwise open Instagram website
+                    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                      window.location.href = `instagram://story-camera`;
+                    } else {
+                      window.open('https://www.instagram.com', '_blank');
+                    }
+                  }}
+                  className="social-button instagram"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  aria-label="Share on Instagram"
+                >
+                  <FaInstagram size={24} color="white" />
+                </motion.button>
+              </div>
+            </div>
           </motion.div>
           <NavigationButtons prev={previousSlide} next={nextSlide} />
         </motion.div>

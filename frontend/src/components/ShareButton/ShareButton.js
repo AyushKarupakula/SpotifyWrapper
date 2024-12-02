@@ -1,53 +1,41 @@
-import React from 'react';
-import { FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { FaLink, FaCheck } from 'react-icons/fa';
 import './ShareButton.css';
 
-export const ShareButton = ({ data }) => {
-  const shareUrl = process.env.REACT_APP_SITE_URL || window.location.origin;
-  const shareTitle = "Check out my Spotify Wrapped!";
+export const ShareButton = () => {
+  const [copied, setCopied] = useState(false);
 
-  const handleTwitterShare = () => {
-    const text = `${shareTitle}\n\nTop Artists:\n${data.topArtistsRecent.items.slice(0, 3).map(artist => artist.name).join(', ')}\n\nTop Tracks:\n${data.topTracksRecent.items.slice(0, 3).map(track => track.name).join(', ')}\n`;
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
-    window.open(url, '_blank');
-  };
-
-  const handleLinkedInShare = () => {
-    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
-    window.open(url, '_blank');
-  };
-
-  const handleInstagramShare = () => {
-    alert('Screenshot your Wrapped and share it on Instagram!');
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy link:', err);
+    }
   };
 
   return (
-    <div className="share-buttons-container">
-      <div className="share-buttons">
-        <button
-          onClick={handleTwitterShare}
-          className="share-button twitter"
-          aria-label="Share on Twitter"
-        >
-          <FaTwitter size={24} />
-        </button>
-        
-        <button
-          onClick={handleLinkedInShare}
-          className="share-button linkedin"
-          aria-label="Share on LinkedIn"
-        >
-          <FaLinkedin size={24} />
-        </button>
-        
-        <button
-          onClick={handleInstagramShare}
-          className="share-button instagram"
-          aria-label="Share on Instagram"
-        >
-          <FaInstagram size={24} />
-        </button>
-      </div>
-    </div>
+    <motion.button
+      className="share-button"
+      onClick={handleCopyLink}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      {copied ? (
+        <>
+          <FaCheck className="share-icon" />
+          <span>Copied!</span>
+        </>
+      ) : (
+        <>
+          <FaLink className="share-icon" />
+          <span>Copy Link</span>
+        </>
+      )}
+    </motion.button>
   );
 }; 

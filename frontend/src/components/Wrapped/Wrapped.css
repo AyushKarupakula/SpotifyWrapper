@@ -625,12 +625,15 @@ button:hover {
 
 .recap-slide {
   text-align: center;
+  padding: 30px;
 }
 
 .recap-content {
-  margin: 2rem 0;
-  font-size: 1.2rem;
-  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
 }
 
 .finale {
@@ -639,11 +642,9 @@ button:hover {
 
 .story-text {
   font-size: 1.1rem;
-  margin: 0.5rem 0;
-  opacity: 0.9;
-  font-weight: 300;
-  max-width: 100%;
-  text-align: center;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 90%;
 }
 
 .story-text-small {
@@ -867,4 +868,86 @@ button:hover {
   font-weight: bold;
   color: var(--button-background);
   margin: 20px 0;
+}
+
+.share-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.social-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.social-button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  position: relative;
+}
+
+.social-button svg {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.social-button.twitter {
+  background: #1DA1F2;
+}
+
+.social-button.linkedin {
+  background: #0077B5;
+}
+
+.social-button.instagram {
+  background: #E4405F;
+  transform: translateY(-9px);
+}
+
+.social-button.instagram:hover {
+  transform: scale(1.05) translateY(-2px);
+}
+
+.social-button.instagram:active {
+  transform: scale(0.95) translateY(-2px);
+}
+
+.social-button.twitter:hover,
+.social-button.linkedin:hover {
+  transform: scale(1.05);
+}
+
+.social-button.twitter:active,
+.social-button.linkedin:active {
+  transform: scale(0.95);
+}
+
+.navigation-buttons {
+  margin-top: 24px;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.nav-button {
+  min-width: 110px;
+  padding: 10px 20px;
 }
