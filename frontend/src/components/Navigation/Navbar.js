@@ -5,11 +5,26 @@ import { useTheme } from '../../context/ThemeContext'; // Import theme context
 import { LanguageSelector } from '../LanguageSelector/LanguageSelector'; // Import language selector
 import './Navbar.css';
 
+/**
+ * @function Navbar
+ * @description A functional component that renders the navigation bar of the application.
+ * It displays different navigation links based on the user's authentication status.
+ * Also includes a theme toggle button and a language selector component.
+ * 
+ * @returns {JSX.Element} The JSX element representing the application's navigation bar.
+ */
 function Navbar() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme(); // Use theme context
   const navigate = useNavigate();
 
+  /**
+   * Handles user logout by calling the logout function from the AuthContext and
+   * then navigating to the login page.
+   * @function
+   * @async
+   * @returns {undefined}
+   */
   const handleLogout = async () => {
     try {
       await logout();

@@ -4,6 +4,18 @@ import { useLanguage } from '../../context/LanguageContext';
 import { TrackRow, ArtistRow } from './Wrapped';
 import './WrappedHistory.css';
 
+/**
+ * A component that displays the user's Spotify Wrapped history.
+ *
+ * Fetches the wraps from local storage and removes duplicates based on timestamp.
+ * Sorts the wraps by timestamp, most recent first.
+ *
+ * If the user hasn't generated any wraps yet, a message will be displayed
+ * prompting them to generate their first wrap.
+ *
+ * When a wrap is clicked, it will expand to show the top artists and tracks for
+ * that wrap.
+ */
 function WrappedHistory() {
   const { t } = useLanguage();
   const [selectedWrap, setSelectedWrap] = useState(null);
@@ -53,6 +65,11 @@ function WrappedHistory() {
     );
   }
 
+  /**
+   * Handles a click event on a wrap in the wrapped history list.
+   * Toggles the selected wrap between the given wrap and null.
+   * @param {Object} wrap - The wrap that was clicked.
+   */
   const handleWrapClick = (wrap) => {
     setSelectedWrap(selectedWrap?.timestamp === wrap.timestamp ? null : wrap);
   };

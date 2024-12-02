@@ -11,11 +11,29 @@ import {
   CardActions 
 } from '@mui/material';
 
+/**
+ * The WrapHistory component displays the user's Spotify wrap history.
+ *
+ * Fetches the wrap history from the server and renders a list of wrap cards.
+ * Each card contains the title of the wrap, the date it was generated, and a button
+ * to view the wrap and a button to delete the wrap. If the user clicks the delete
+ * button, a confirmation dialog will appear asking the user to confirm the
+ * deletion. If the user confirms the deletion, the wrap will be deleted from the
+ * server and the local state will be updated.
+ *
+ * If the user hasn't generated any wraps yet, a message will be displayed
+ * prompting them to generate their first wrap.
+ */
 const WrapHistory = () => {
   const [wraps, setWraps] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+  /**
+   * Fetches the user's Spotify wrap history from the server and updates the
+   * local state with the response data. If an error occurs, logs the error to
+   * the console. Sets the loading state to false when the request is complete.
+   */
     const fetchWraps = async () => {
       try {
         const response = await axios.get('/api/spotify/wrap/history/');
@@ -30,6 +48,12 @@ const WrapHistory = () => {
     fetchWraps();
   }, []);
 
+/**
+ * Deletes a wrap after user confirmation.
+ * Sends a request to delete the wrap from the server and updates local state.
+ * Logs an error to the console if the deletion fails.
+ * @param {number} wrapId - The ID of the wrap to delete.
+ */
   const handleDelete = async (wrapId) => {
     if (window.confirm('Are you sure you want to delete this wrap?')) {
       try {

@@ -3,6 +3,19 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Box, Button, Typography, CircularProgress } from '@mui/material';
 
+/**
+ * A React component that displays a user's Spotify Wrap.
+ *
+ * This component fetches and presents the user's Spotify wrap data
+ * as a series of slides. Each slide displays different aspects of
+ * the wrap, such as top artists and tracks. Navigation buttons
+ * allow users to move between slides.
+ *
+ * The component fetches wrap data from the backend using the
+ * wrap ID from the URL parameters.
+ *
+ * @returns {JSX.Element} The SpotifyWrap component
+ */
 const SpotifyWrap = () => {
   const [currentSlide, setCurrentSlide] = useState(1);
   const [wrapData, setWrapData] = useState(null);
@@ -10,6 +23,15 @@ const SpotifyWrap = () => {
   const { wrapId } = useParams();
 
   useEffect(() => {
+/**
+ * Fetches wrap data from the backend using the wrap ID from the URL parameters.
+ *
+ * Updates the `wrapData` state with the fetched wrap data.
+ *
+ * If an error occurs, logs the error to the console and keeps the `loading` state as false.
+ *
+ * @memberof SpotifyWrap
+ */
     const fetchWrapData = async () => {
       try {
         const response = await axios.get(`/api/spotify/wrap/${wrapId}/`);

@@ -5,6 +5,22 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, IconButton } from '@mui/material';
 import './WrapHistory.css';
 
+/**
+ * A component that displays the user's Spotify wrap history.
+ *
+ * Fetches the wrap history from the server and displays it in a grid of cards.
+ * Each card contains the title of the wrap, the date it was generated, and a button
+ * to view the wrap. If the user clicks the delete button on a card, a confirmation
+ * modal will appear asking them to confirm the deletion. If the user confirms the
+ * deletion, the wrap will be deleted from the server and the local state will be
+ * updated.
+ *
+ * If an error occurs while fetching the wrap history, an error message will be
+ * displayed.
+ *
+ * If the user hasn't generated any wraps yet, a message will be displayed
+ * prompting them to generate their first wrap.
+ */
 function WrapHistory() {
   const [wraps, setWraps] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,6 +31,11 @@ function WrapHistory() {
     fetchWrapHistory();
   }, []);
 
+  /**
+   * Fetches the wrap history from the server and updates the local state.
+   * If an error occurs, sets the error state and logs the error to the console.
+   * Sets the loading state to false when the request is complete.
+   */
   const fetchWrapHistory = async () => {
     try {
       const response = await spotifyAPI.getWrapHistory();
@@ -27,10 +48,20 @@ function WrapHistory() {
     }
   };
 
+  /**
+   * Handles the click event of the delete button for a wrap.
+   * Opens the delete wrap modal dialog with the wrap ID to delete.
+   * @param {number} wrapId - The ID of the wrap to delete.
+   */
   const handleDeleteClick = (wrapId) => {
     setDeleteModal({ open: true, wrapId });
   };
 
+  /**
+   * Handles confirming the delete wrap modal dialog.
+   * Deletes the wrap from the server and updates the local state.
+   * If an error occurs, alerts the user with the error message.
+   */
   const handleDeleteConfirm = async () => {
     try {
       await spotifyAPI.deleteWrap(deleteModal.wrapId);
@@ -43,6 +74,10 @@ function WrapHistory() {
     }
   };
 
+  /**
+   * Handles canceling the delete wrap modal dialog.
+   * Sets the deleteModal state to its initial value.
+   */
   const handleDeleteCancel = () => {
     setDeleteModal({ open: false, wrapId: null });
   };

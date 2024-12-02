@@ -3,11 +3,26 @@ import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * Profile is a component that renders the user's profile page.
+ * It displays the user's username and provides a button to delete the account.
+ * Additionally, it displays a list of the developers' names and emails and provides a form to send a message to the developers.
+ * @returns {JSX.Element} The rendered profile page.
+ */
 const Profile = () => {
   const { user, deleteAccount } = useAuth();
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
 
+/**
+ * Handles the account deletion process.
+ * 
+ * This function attempts to delete the user's account by calling the 
+ * deleteAccount function from the authentication context. If the 
+ * deletion is successful, it navigates the user to the homepage or login 
+ * page. If an error occurs during the deletion process, it displays an 
+ * alert message indicating the failure.
+ */
   const handleDeleteAccount = async () => {
     try {
       await deleteAccount();
@@ -17,9 +32,16 @@ const Profile = () => {
     }
   };
 
+/**
+ * Handles the form submission for sending a message to the developers.
+ * 
+ * This function prevents default form behavior, displays an alert message
+ * with the message that was sent, and resets the message state.
+ * @param {Event} e The form submission event.
+ */
   const handleSubmitMessage = (e) => {
     e.preventDefault();
-    alert(`Message Sent: ${message}`);
+    alert(`Thank you for submitting your message: ${message}`);
     setMessage('');
   };
 
