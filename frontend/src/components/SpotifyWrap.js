@@ -3,6 +3,21 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Box, Button, Typography, CircularProgress } from '@mui/material';
 
+/**
+ * The SpotifyWrap component displays a Spotify wrap for a given wrapId.
+ *
+ * The component fetches the wrap data from the server and stores it in the component's state.
+ * It then renders a series of slides, each displaying a different aspect of the wrap data.
+ *
+ * The component also renders a set of controls at the bottom of the page, allowing the user
+ * to navigate through the slides.
+ *
+ * If the component is still loading the data, it renders a circular progress indicator.
+ * If the component encounters an error while fetching the data, it renders an error message.
+ *
+ * @param {Object} props - The component's props.
+ * @param {string} props.wrapId - The ID of the Spotify wrap to display.
+ */
 const SpotifyWrap = () => {
   const [currentSlide, setCurrentSlide] = useState(1);
   const [wrapData, setWrapData] = useState(null);

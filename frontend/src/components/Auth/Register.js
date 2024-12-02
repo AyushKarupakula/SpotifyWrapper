@@ -3,6 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
 
+/**
+ * The Register component renders a registration form for new users.
+ * It manages form state and handles user registration through the useAuth hook.
+ * If the registration is successful, it navigates to the /dashboard route.
+ * It validates that the password and confirm password fields match before submitting.
+ * Displays error messages for mismatched passwords or registration failures.
+ * 
+ * @returns {ReactElement} The Register component.
+ */
 function Register() {
   const [formData, setFormData] = useState({
     username: '',
@@ -14,6 +23,19 @@ function Register() {
   const navigate = useNavigate();
   const { register } = useAuth();
 
+  /**
+   * Handles the form submission by validating the form data, sending a registration
+   * request to the API, and handling any errors that may occur.
+   * 
+   * Removes the confirmPassword field from the form data before sending to the API.
+   * 
+   * The function will catch any errors and display the error message to the user.
+   * It will also handle different types of error responses from the API, such as
+   * validation errors or generic error messages.
+   * 
+   * If the registration is successful, it will navigate to the /dashboard route.
+   * @param {Event} e - The form submission event.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');

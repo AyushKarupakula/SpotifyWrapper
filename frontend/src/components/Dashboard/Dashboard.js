@@ -4,6 +4,16 @@ import { spotifyAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import './Dashboard.css';
 
+/**
+ * The Dashboard component is the main page of the application.
+ *
+ * It checks if the user is authenticated with Spotify and renders the appropriate
+ * UI. If the user is not authenticated, it renders a "Connect to Spotify" button.
+ * If the user is authenticated, it renders a list of their playlists, along with
+ * a "View Your Spotify Wrapped" button.
+ *
+ * The component does not accept any props.
+ */
 function Dashboard() {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,6 +25,16 @@ function Dashboard() {
     checkSpotifyAuth();
   }, []);
 
+  /**
+   * Checks if the user is authenticated with Spotify.
+   *
+   * Makes a request to the Spotify API to fetch the user's playlists.
+   * If the request is successful, it sets the `isSpotifyAuthenticated` state to true
+   * and fetches the user's playlists. If the request fails with a 401 status code,
+   * it sets the `isSpotifyAuthenticated` state to false. If the request fails with
+   * any other status code, it sets the `error` state to an error message.
+   * Finally, it sets the `loading` state to false.
+   */
   const checkSpotifyAuth = async () => {
     try {
       await spotifyAPI.getUserPlaylists();
@@ -30,6 +50,12 @@ function Dashboard() {
     }
   };
 
+  /**
+   * Initiates the Spotify login process by calling the `authorize()` function
+   * from the `spotifyAPI` and redirecting the user to the returned URL.
+   *
+   * If the request fails, it sets the `error` state to an error message.
+   */
   const handleSpotifyLogin = async () => {
     try {
       const response = await spotifyAPI.authorize();
@@ -39,6 +65,13 @@ function Dashboard() {
     }
   };
 
+  /**
+   * Fetches the user's playlists from the Spotify API and updates the playlists state.
+   *
+   * Sets the `loading` state to false after fetching the playlists. If the request
+   * succeeds, updates the `playlists` state with the fetched data. If the request
+   * fails, sets an error message in the `error` state and also sets `loading` to false.
+   */
   const fetchPlaylists = async () => {
     try {
       const response = await spotifyAPI.getUserPlaylists();

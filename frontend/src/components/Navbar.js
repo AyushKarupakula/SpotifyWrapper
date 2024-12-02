@@ -2,6 +2,11 @@ import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
+/**
+ * A MUI AppBar component that serves as the main navigation bar for the app.
+ * 
+ * @returns {React.ReactElement} The JSX element representing the Navbar.
+ */
 const Navbar = () => {
   return (
     <AppBar position="static">

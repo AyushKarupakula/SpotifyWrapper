@@ -2,9 +2,21 @@ import React, { useState } from 'react';
 import { Box, Button, Container, Typography } from '@mui/material';
 import { spotifyService } from '../services/api';
 
+/**
+ * A simple login component that redirects the user to the Spotify login page
+ * using the `spotifyService.login()` function from the `api` module.
+ *
+ * @returns A JSX element containing the login button
+ */
 const Login = () => {
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Handles the Spotify login process by calling the `login()` function from the
+   * `spotifyService` and redirecting the user to the returned URL.
+   *
+   * @returns {Promise<void>}
+   */
   const handleSpotifyLogin = async () => {
     try {
       setLoading(true);

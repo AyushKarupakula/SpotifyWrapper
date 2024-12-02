@@ -2,11 +2,30 @@ import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+/**
+ * Handles the Spotify OAuth callback process.
+ *
+ * This component extracts the authorization code from the URL parameters
+ * and sends it to the backend for token exchange. Upon successful authentication,
+ * it navigates to the dashboard. If the code is missing or an error occurs during
+ * the process, it navigates to an error page.
+ *
+ * @returns A React component that displays a message indicating that the app
+ * is connecting to Spotify.
+ */
 const SpotifyCallback = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
+    /**
+     * Handles the Spotify OAuth callback process.
+     *
+     * Extracts the authorization code from the URL parameters and sends it to
+     * the backend for token exchange. Upon successful authentication, it
+     * navigates to the dashboard. If the code is missing or an error occurs
+     * during the process, it navigates to an error page.
+     */
     const handleCallback = async () => {
       try {
         // Get the code from URL parameters

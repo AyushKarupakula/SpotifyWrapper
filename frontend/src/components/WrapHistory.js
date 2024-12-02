@@ -11,11 +11,27 @@ import {
   CardActions 
 } from '@mui/material';
 
+/**
+ * The WrapHistory component displays a list of all the SpotifyWraps that the
+ * currently authenticated user has generated. Each list item displays the title
+ * of the wrap, the date it was generated, and two buttons: "View Wrap" and "Delete".
+ * The "View Wrap" button navigates to the wrap detail page for the corresponding
+ * wrap. The "Delete" button deletes the wrap from the database.
+ * 
+ * If the user has not generated any wraps, the component displays a message
+ * indicating this and a button to navigate to the wrap generation page.
+ */
 const WrapHistory = () => {
   const [wraps, setWraps] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+/**
+ * Fetches all the SpotifyWraps that the currently authenticated user has
+ * generated and stores them in the `wraps` state. If an error occurs during
+ * the fetch, logs the error to the console. Finally, sets `loading` to
+ * `false`, indicating that the fetch is complete.
+ */
     const fetchWraps = async () => {
       try {
         const response = await axios.get('/api/spotify/wrap/history/');

@@ -3,9 +3,17 @@ import { motion } from 'framer-motion';
 import { FaLink, FaCheck } from 'react-icons/fa';
 import './ShareButton.css';
 
+/**
+ * ShareButton component renders a button that allows users to copy the
+ * current page URL to the clipboard.
+ */
 export const ShareButton = () => {
   const [copied, setCopied] = useState(false);
 
+/**
+ * Copies the current page URL to the clipboard and sets the 'copied' state to true.
+ * Displays a 'Copied!' message for 2 seconds. Logs an error if the copying fails.
+ */
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
