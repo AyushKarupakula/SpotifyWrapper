@@ -50,6 +50,40 @@ export default {
     noHistory: "No Wrapped History Yet",
     generateFirst: "Generate your first Wrapped to see it here!",
     topArtists: "Top Artists",
-    topTracks: "Top Tracks"
+    topTracks: "Top Tracks",
+    timeRange: {
+      shortTerm: "Last 4 Weeks",
+      mediumTerm: "Last 6 Months",
+      longTerm: "All Time"
+    },
+    clickToExpand: "Click to view details",
+    shareThis: "Share this Wrapped",
+    deleteThis: "Delete this Wrapped",
+    confirmDelete: "Are you sure you want to delete this Wrapped?",
+    sortBy: "Sort by",
+    filterBy: "Filter by time range",
+    newest: "Newest First",
+    oldest: "Oldest First"
+  },
+  dashboard: {
+    welcome: "Welcome to Your Dashboard",
+    recentActivity: "Recent Activity",
+    topArtists: "Your Top Artists",
+    topTracks: "Your Top Tracks",
+    viewMore: "View More",
+    createWrapped: "Create New Wrapped",
+    viewHistory: "View History"
+  },
+  home: {
+    title: "Welcome to Spotify Stats",
+    subtitle: "Discover your music journey",
+    getStarted: "Get Started",
+    features: {
+      wrapped: "Create your personalized Wrapped",
+      insights: "Get insights about your music taste",
+      history: "Track your listening history",
+      share: "Share with friends"
+    },
+    loginPrompt: "Login with Spotify to begin"
   }
 }; 

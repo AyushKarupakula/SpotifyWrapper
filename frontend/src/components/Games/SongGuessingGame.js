@@ -14,10 +14,19 @@ const SongGuessingGame = ({ tracks, onComplete }) => {
 
   const getYearOptions = (track) => {
     const actualYear = new Date(track.album.release_date).getFullYear();
-    const years = [actualYear - 4, actualYear - 1, actualYear, actualYear + 4]
-      .filter(year => year > 1950 && year <= new Date().getFullYear())
+    const yearOffsets = [-3, -2, -1, 1, 2, 3];
+    const possibleYears = yearOffsets
+      .map(offset => actualYear + offset)
+      .filter(year => year > 1950 && year <= new Date().getFullYear());
+    
+    const wrongYears = possibleYears
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
+    
+    const allYears = [...wrongYears, actualYear]
       .sort(() => Math.random() - 0.5);
-    return [...new Set(years)];
+    
+    return allYears;
   };
 
   const handleGuess = (answer) => {

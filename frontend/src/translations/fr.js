@@ -44,5 +44,46 @@ export default {
     linkedin: "Partager sur LinkedIn",
     instagram: "Partager sur Instagram",
     screenshotMsg: "Prenez une capture d'écran de votre Wrapped et partagez-la sur Instagram !"
+  },
+  dashboard: {
+    welcome: "Bienvenue sur votre tableau de bord",
+    recentActivity: "Activité récente",
+    topArtists: "Vos meilleurs artistes",
+    topTracks: "Vos meilleures pistes",
+    viewMore: "Voir plus",
+    createWrapped: "Créer un nouveau Wrapped",
+    viewHistory: "Voir l'historique"
+  },
+  home: {
+    title: "Bienvenue sur Spotify Stats",
+    subtitle: "Découvrez votre parcours musical",
+    getStarted: "Commencer",
+    features: {
+      wrapped: "Créez votre Wrapped personnalisé",
+      insights: "Obtenez des aperçus de vos goûts musicaux",
+      history: "Suivez votre historique d'écoute",
+      share: "Partagez avec vos amis"
+    },
+    loginPrompt: "Connectez-vous avec Spotify pour commencer"
+  },
+  wrappedHistory: {
+    title: "Votre historique Wrapped",
+    noHistory: "Pas encore d'historique Wrapped",
+    generateFirst: "Générez votre premier Wrapped pour le voir ici !",
+    topArtists: "Meilleurs artistes",
+    topTracks: "Meilleures pistes",
+    timeRange: {
+      shortTerm: "4 dernières semaines",
+      mediumTerm: "6 derniers mois",
+      longTerm: "Tout temps"
+    },
+    clickToExpand: "Cliquez pour voir les détails",
+    shareThis: "Partager ce Wrapped",
+    deleteThis: "Supprimer ce Wrapped",
+    confirmDelete: "Êtes-vous sûr de vouloir supprimer ce Wrapped ?",
+    sortBy: "Trier par",
+    filterBy: "Filtrer par période",
+    newest: "Plus récent",
+    oldest: "Plus ancien"
   }
 }; 
