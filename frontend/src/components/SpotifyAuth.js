@@ -1,28 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-/**
- * The SpotifyAuth component initiates a request to connect with Spotify by
- * fetching the authorization URL from the backend API. If the URL is
- * successfully retrieved, it redirects the user's browser to the URL for
- * authentication. If the URL is not received or an error occurs, error messages
- * are logged to the console.
- *
- * @async
- * @returns {void}
- */
 const SpotifyAuth = () => {
-/**
- * Initiates a request to connect with Spotify by fetching the authorization URL.
- *
- * This function makes a GET request to the backend API to retrieve the Spotify
- * authorization URL. If the URL is successfully retrieved, it redirects the
- * user's browser to the URL for authentication. If the URL is not received or
- * an error occurs, error messages are logged to the console.
- *
- * @async
- * @returns {void}
- */
   const handleSpotifyConnect = async () => {
     try {
       const response = await axios.get('http://localhost:8000/api/spotify/auth/', {

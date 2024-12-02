@@ -3,22 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { spotifyAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 
-/**
- * Handles the Spotify OAuth callback, exchanges code for tokens, and stores them.
- *
- * This component renders a loading screen while the code is being exchanged for tokens.
- * If the exchange is successful, the user is redirected to the dashboard.
- * If the exchange fails, an error message is displayed with a button to return to the dashboard.
- *
- * State Variables:
- * - error: Error message in case of a failure.
- * - loading: Boolean indicating if the code is being exchanged.
- *
- * Effects:
- * - useEffect: Triggers the code exchange on component mount.
- *
- * @async
- */
 function SpotifyCallback() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,11 +11,6 @@ function SpotifyCallback() {
   const { setIsSpotifyAuthenticated } = useAuth();
 
   useEffect(() => {
-  /**
-   * Handles the Spotify OAuth callback, exchanges code for tokens, and stores them.
-   *
-   * @async
-   */
     const handleCallback = async () => {
       const urlParams = new URLSearchParams(location.search);
       const code = urlParams.get('code');
