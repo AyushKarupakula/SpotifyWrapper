@@ -16,15 +16,15 @@ import { LanguageProvider } from './context/LanguageContext';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  
+
   if (loading) {
     return <div>Loading...</div>;
   }
-  
+
   if (!user) {
     return <Navigate to="/login" />;
   }
-  
+
   return children;
 };
 
@@ -33,43 +33,59 @@ function AppContent() {
 
   return (
     <div className="App">
-      <Navbar />
+      <Navbar className="navbar" /> {/* Navbar with higher z-index */}
       <Routes>
-        <Route path="/" element={
-          <div className="App-header">
-            <h1>Welcome to Spotify Wrapper</h1>
-            {!user && (
-              <div className="auth-buttons">
-                <a href="/login" className="auth-button">Login</a>
-                <a href="/register" className="auth-button">Register</a>
-              </div>
-            )}
-          </div>
-        } />
+        <Route
+          path="/"
+          element={
+            <div className="App-header">
+              <div className="wave-background"></div> {/* Moving wave background */}
+              <h1 className="glowing-text">Welcome to Spotify Wrapper</h1> {/* Glowing text */}
+              {!user && (
+                <div className="auth-buttons">
+                  <a href="/login" className="auth-button">Login</a>
+                  <a href="/register" className="auth-button">Register</a>
+                </div>
+              )}
+            </div>
+          }
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/spotify/callback" element={<SpotifyCallback />} />
-        <Route path="/wrapped" element={
-          <ProtectedRoute>
-            <Wrapped />
-          </ProtectedRoute>
-        } />
-        <Route path="/wrapped/:wrapId" element={
-          <ProtectedRoute>
-            <WrappedHistory />
-          </ProtectedRoute>
-        } />
-        <Route path="/wrap-history" element={
-          <ProtectedRoute>
-            <WrapHistory />
-          </ProtectedRoute>
-        } />
+        <Route
+          path="/wrapped"
+          element={
+            <ProtectedRoute>
+              <Wrapped />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/wrapped/:wrapId"
+          element={
+            <ProtectedRoute>
+              <WrappedHistory />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/wrap-history"
+          element={
+            <ProtectedRoute>
+              <WrapHistory />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/callback" element={<SpotifyCallback />} />
       </Routes>
     </div>
