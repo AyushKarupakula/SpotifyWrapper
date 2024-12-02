@@ -1,7 +1,7 @@
 
 .wrapped-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+    background: linear-gradient(135deg, var(--button-background) 0%, var(--background-color) 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,13 +27,21 @@
     overflow: hidden;
 }
 
-/* Welcome Slide */
+/* Welcome/First Slide Styles */
+.welcome-slide {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 600px;
+  padding: 40px;
+}
+
 .welcome-slide h1 {
-    font-size: 3.5rem;
-    margin-bottom: 20px;
-    background: linear-gradient(45deg, #1DB954, #fff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  font-size: 4rem;
+  margin-bottom: 40px;
+  background: linear-gradient(45deg, var(--button-background), #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .welcome-slide p {
@@ -43,6 +51,60 @@
     margin: 15px 0;
     max-width: 80%;
     text-align: center;
+}
+
+/* Time Range Options Container */
+.time-range-options {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 40px 0;
+  width: 100%;
+  max-width: 500px;
+}
+
+.time-range-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid transparent;
+  border-radius: 30px;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.time-range-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.time-range-button.selected {
+  background: var(--button-background);
+  border-color: white;
+}
+
+/* Navigation Button for First Slide */
+.welcome-slide .navigation-buttons {
+  margin-top: 40px;
+}
+
+.welcome-slide .nav-button {
+  background: var(--button-background);
+  color: white;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.welcome-slide .nav-button:hover {
+  background: var(--button-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
 }
 
 /* Artist Slide */
@@ -73,7 +135,7 @@
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    box-shadow: 0 0 20px rgba(29, 185, 84, 0.3);
+    box-shadow: 0 0 20px var(--button-background);
 }
 
 /* Songs Slide */
@@ -160,7 +222,7 @@
 .song-number {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #1DB954;
+    color: var(--button-background);
     min-width: 30px;
     text-align: center;
 }
@@ -240,8 +302,8 @@
 
 /* Navigation Buttons */
 button {
-    background: #1DB954;
-    color: white;
+    background: var(--button-background);
+    color: var(--text-color);
     border: none;
     padding: 12px 30px;
     border-radius: 25px;
@@ -254,10 +316,10 @@ button {
 }
 
 button:hover {
-    background: #fff;
-    color: #1DB954;
+    background: var(--button-hover);
+    color: var(--button-hover-text);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(29, 185, 84, 0.3);
+    box-shadow: 0 5px 15px var(--button-background);
 }
 
 /* Summary Slide */
@@ -268,14 +330,14 @@ button:hover {
 .summary-slide h2 {
     font-size: 3rem;
     margin-bottom: 30px;
-    background: linear-gradient(45deg, #1DB954, #fff);
+    background: linear-gradient(45deg, var(--button-background), #fff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 /* Loading and Error States */
 .wrapped-loading, .wrapped-error {
-    color: white;
+    color: var(--text-color);
     font-size: 1.5rem;
     text-align: center;
     padding: 40px;
@@ -325,7 +387,7 @@ button:hover {
 .artist-rank {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #1DB954;
+    color: var(--button-background);
     margin-bottom: 5px;
 }
 
@@ -369,7 +431,7 @@ button:hover {
     height: 200px;
     border-radius: 50%;
     object-fit: cover;
-    box-shadow: 0 0 30px rgba(29, 185, 84, 0.3);
+    box-shadow: 0 0 30px var(--button-background);
 }
 
 /* Image glow effect */
@@ -398,7 +460,7 @@ button:hover {
 
 .artist-genres {
     font-size: 1rem;
-    color: #1DB954;
+    color: var(--button-background);
     margin-top: 10px;
 }
 
@@ -487,7 +549,7 @@ button:hover {
     width: 250px;
     height: 250px;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px var(--background-color2);
     object-fit: cover;
 }
 
@@ -505,7 +567,7 @@ button:hover {
 .track-number {
     font-size: 1.1rem;
     font-weight: bold;
-    color: #1DB954;
+    color: var(--button-background);
     min-width: 25px;
 }
 
@@ -543,18 +605,18 @@ button:hover {
 }
 
 .nav-button {
-  background: #1DB954;
+  background: var(--button-background);
   border: none;
   padding: 0.8rem 1.5rem;
   border-radius: 20px;
-  color: white;
+  color: var(--text-color);
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .nav-button:hover {
-  background: #1ed760;
+  background: var(--button-hover);
 }
 
 .artist-card img {
@@ -562,7 +624,7 @@ button:hover {
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px var(--background-color);
 }
 
 .featured-artist img {
@@ -570,7 +632,7 @@ button:hover {
   height: 250px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px var(--background-color);
 }
 
 .countdown-track img {
@@ -578,7 +640,7 @@ button:hover {
   height: 250px;
   border-radius: 8px;
   object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px var(--background-color);
 }
 
 .featured-track img {
@@ -586,7 +648,7 @@ button:hover {
   height: 250px;
   border-radius: 8px;
   object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px var(--background-color);
 }
 
 .tracks-grid {
@@ -626,12 +688,15 @@ button:hover {
 
 .recap-slide {
   text-align: center;
+  padding: 30px;
 }
 
 .recap-content {
-  margin: 2rem 0;
-  font-size: 1.2rem;
-  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
 }
 
 .finale {
@@ -640,11 +705,9 @@ button:hover {
 
 .story-text {
   font-size: 1.1rem;
-  margin: 0.5rem 0;
-  opacity: 0.9;
-  font-weight: 300;
-  max-width: 100%;
-  text-align: center;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 90%;
 }
 
 .story-text-small {
@@ -787,64 +850,190 @@ button:hover {
   text-align: center;
 }
 
-/* Duo Wrapped Styles */
-.duo-wrapped .wrapped-slide {
-  max-width: 1200px;
+.track-row .audio-preview {
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  padding: 8px 15px;
 }
 
-.duo-container {
-  display: flex;
-  gap: 2rem;
-  width: 100%;
+.countdown-track .audio-preview {
+  margin-top: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  padding: 10px 20px;
+  width: 80%;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.finale-slide .audio-preview {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 30px;
+  padding: 12px 25px;
+  width: 90%;
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.audio-preview .play-button {
+  background: var(--button-background);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.audio-preview .play-button:hover {
+  background: var(--button-hover);
+  transform: scale(1.1);
+}
+
+.audio-preview .progress-bar {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.audio-preview .progress-fill {
+  background: var(--button-background);
+}
+
+.audio-preview .track-name {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.audio-preview-unavailable {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8em;
+  text-align: center;
+  padding: 5px;
+}
+
+.game-slide {
+  justify-content: flex-start;
+  padding-top: 30px;
+}
+
+.game-results {
+  text-align: center;
+}
+
+.score-display {
+  margin: 30px 0;
+  padding: 20px;
+  background: rgba(var(--button-background), 0.1);
+  border-radius: 15px;
+  border: 2px solid var(--window-background);
+}
+
+.score-display .score {
+  font-size: 4rem;
+  font-weight: bold;
+  color: var(--button-background);
   margin: 20px 0;
 }
 
-.user-wrap {
-  flex: 1;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 20px;
-  border-radius: 15px;
-  backdrop-filter: blur(10px);
+.share-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0;
 }
 
-.user-wrap h3 {
-  color: #1DB954;
-  margin-bottom: 20px;
-  font-size: 1.5rem;
+.social-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
 }
 
-.duo-wrapped .artists-list,
-.duo-wrapped .tracks-list {
-  max-height: 400px;
-  overflow-y: auto;
-  padding-right: 10px;
-}
-
-/* Add a subtle scrollbar */
-.duo-wrapped .artists-list::-webkit-scrollbar,
-.duo-wrapped .tracks-list::-webkit-scrollbar {
-  width: 5px;
-}
-
-.duo-wrapped .artists-list::-webkit-scrollbar-thumb,
-.duo-wrapped .tracks-list::-webkit-scrollbar-thumb {
-  background: #1DB954;
-  border-radius: 5px;
-}
-
-.share-duo-button {
-  background: #1DB954;
-  color: white;
+.social-button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: none;
-  padding: 12px 30px;
-  border-radius: 25px;
-  font-size: 1.1rem;
   cursor: pointer;
-  margin-top: 20px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  transition: all 0.2s ease;
+  padding: 0;
+  position: relative;
 }
 
-.share-duo-button:hover {
-  background: #1ed760;
+.social-button svg {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.social-button.twitter {
+  background: #1DA1F2;
+}
+
+.social-button.linkedin {
+  background: #0077B5;
+}
+
+.social-button.instagram {
+  background: #E4405F;
+  transform: translateY(-9px);
+}
+
+.social-button.instagram:hover {
+  transform: scale(1.05) translateY(-2px);
+}
+
+.social-button.instagram:active {
+  transform: scale(0.95) translateY(-2px);
+}
+
+.social-button.twitter:hover,
+.social-button.linkedin:hover {
+  transform: scale(1.05);
+}
+
+.social-button.twitter:active,
+.social-button.linkedin:active {
+  transform: scale(0.95);
+}
+
+.navigation-buttons {
+  margin-top: 24px;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.nav-button {
+  min-width: 110px;
+  padding: 10px 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .welcome-slide {
+    min-height: 500px;
+    padding: 30px;
+  }
+
+  .welcome-slide h1 {
+    font-size: 3rem;
+    margin-bottom: 30px;
+  }
+
+  .time-range-options {
+    gap: 15px;
+    margin: 30px 0;
+  }
+
+  .time-range-button {
+    padding: 12px 25px;
+    font-size: 1.1rem;
+  }
 }

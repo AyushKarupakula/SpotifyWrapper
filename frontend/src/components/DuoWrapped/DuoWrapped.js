@@ -14,6 +14,7 @@ import {
   triggerConfetti 
 } from '../Wrapped/Wrapped';
 
+//duo wrappe
 function DuoWrapped() {
   const [sharedWrap, setSharedWrap] = useState(null);
   const [currentUserWrap, setCurrentUserWrap] = useState(null);

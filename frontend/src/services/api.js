@@ -52,6 +52,7 @@ export const authAPI = {
   register: (userData) => api.post('/auth/register/', userData),
   logout: () => api.post('/auth/logout/'),
   checkAuth: () => api.get('/auth/user/'),
+  deleteAccount: () => api.post('/auth/delete_account/'),
 };
 
 export const spotifyAPI = {
@@ -63,6 +64,11 @@ export const spotifyAPI = {
   getWrapHistory: () => api.get('/spotify/wraps/'),
   getWrapDetail: (wrapId) => api.get(`/spotify/wraps/${wrapId}/`),
   deleteWrap: (wrapId) => api.delete(`/spotify/wraps/${wrapId}/`),
+  createWrapped: (timeRange) => 
+    api.post('/spotify/wrapped/create/', 
+      { time_range: timeRange },
+      { withCredentials: true }
+    ),
 };
 
 export default api;
