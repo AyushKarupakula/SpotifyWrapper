@@ -44,5 +44,12 @@ export default {
     linkedin: "Share on LinkedIn",
     instagram: "Share on Instagram",
     screenshotMsg: "Screenshot your Wrapped and share it on Instagram!"
+  },
+  wrappedHistory: {
+    title: "Your Wrapped History",
+    noHistory: "No Wrapped History Yet",
+    generateFirst: "Generate your first Wrapped to see it here!",
+    topArtists: "Top Artists",
+    topTracks: "Top Tracks"
   }
 }; 
