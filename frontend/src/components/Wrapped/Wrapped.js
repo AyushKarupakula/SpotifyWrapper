@@ -10,17 +10,7 @@ import { ShareButton } from '../ShareButton/ShareButton';
 import { useLanguage } from '../../context/LanguageContext';
 import { FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa';
 
-
-/**
- * A component that renders two navigation buttons for previous and next
- * Wrapped sections. The buttons are rendered conditionally, based on the
- * presence of the `prev` and `next` functions passed as props.
- * @prop {() => void} prev - A function to be called when the user wants to go
- *    to the previous Wrapped section.
- * @prop {() => void} next - A function to be called when the user wants to go
- *    to the next Wrapped section.
- * @returns {JSX.Element} A component with two navigation buttons.
- */
+// Define components first
 export const NavigationButtons = ({ prev, next }) => {
   const { t } = useLanguage();
   
@@ -50,14 +40,6 @@ export const NavigationButtons = ({ prev, next }) => {
   );
 };
 
-/**
- * A component to render a single track in the Wrapped countdown
- * @prop {SpotifyApi.TrackObjectFull} track - The track object to be rendered
- * @prop {number} number - The number of the track in the countdown
- * @prop {boolean} [isFinale=false] - Whether this track is the finale track
- * @returns {JSX.Element} A component with the track's name, artist, album
- *    image, and audio preview.
- */
 export const CountdownTrack = ({ track, number, isFinale = false }) => (
   <motion.div 
     className={`countdown-track}`}
@@ -82,12 +64,7 @@ export const CountdownTrack = ({ track, number, isFinale = false }) => (
   </motion.div>
 );
 
-/**
- * A component to render a single artist row with animated transition.
- * @prop {Object} artist - The artist object containing information to display.
- * @prop {number} rank - The ranking position of the artist.
- * @returns {JSX.Element} A component displaying artist's image, name, and genres.
- */
+// Helper component for artist rows
 export const ArtistRow = ({ artist, rank }) => (
   <motion.div 
     className="artist-row"
@@ -108,12 +85,7 @@ export const ArtistRow = ({ artist, rank }) => (
   </motion.div>
 );
 
-/**
- * A component to render a single track row with animated transition.
- * @prop {Object} track - The track object containing information to display.
- * @prop {number} rank - The ranking position of the track.
- * @returns {JSX.Element} A component displaying track's image, name, artist name, and preview.
- */
+// Helper component for track rows (similar to ArtistRow)
 export const TrackRow = ({ track, rank }) => (
   <motion.div 
     className="track-row"
@@ -138,10 +110,7 @@ export const TrackRow = ({ track, rank }) => (
   </motion.div>
 );
 
-/**
- * Triggers a confetti effect that fires off in three stages.
- * @returns {void}
- */
+// Simplified confetti function
 export const triggerConfetti = () => {
   // Initial burst
   confetti({
@@ -170,12 +139,8 @@ export const triggerConfetti = () => {
   }, 400);
 };
 
+// Replace the existing slideVariants with these cooler variants
 const slideVariants = {
-  /**
-   * Animate the slide entering the viewport.
-   * @param {number} direction The direction of the slide transition, either 1 (right) or -1 (left)
-   * @returns {{ x: number, y: number, opacity: number, scale: number, rotate: number }} The animation variant object
-   */
   enter: (direction) => ({
     x: direction > 0 ? 1000 : -1000,
     y: 0,
@@ -199,14 +164,6 @@ const slideVariants = {
   })
 };
 
-/**
- * The Wrapped component is the core of the Wrapped experience. It presents a sequence of slides to the user,
- * each with its own unique content and animations. The slides are navigated through using the navigation buttons.
- * The first slide is the intro slide, which displays a welcome message and a selector for the time range of the Wrapped.
- * The next slides display the user's top tracks, artists, and albums, and then the Wrapped ends with a final slide that
- * displays the user's score and provides a share button to share the Wrapped on social media.
- * @returns {JSX.Element} The Wrapped component
- */
 function Wrapped() {
   const { t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(1);
@@ -230,14 +187,6 @@ function Wrapped() {
     await createWrapped(range);
   };
 
-  /**
-   * Creates a new Wrapped for the given time range and updates the wrapped data state.
-   * The function fetches the top tracks and artists for the given time range, formats the response data
-   * into the expected format, and then updates the wrapped data state with the new data.
-   * The function also stores the new wrapped data in local storage, overwriting any existing wrapped history.
-   * @param {string} selectedRange - The time range for which to create the Wrapped.
-   * @returns {Promise<void>}
-   */
   const createWrapped = async (selectedRange) => {
     setLoadingTimeRange(true);
     setError(null);
@@ -268,14 +217,6 @@ function Wrapped() {
     }
   };
 
-/**
- * Advances to the next slide in the Wrapped component.
- *
- * Increases the current slide index by one if it is less than the total number
- * of slides. Sets the transition direction to forward and displays a loading
- * indicator during the transition. The slide change is delayed by 500ms to
- * allow for a smooth transition effect.
- */
   const nextSlide = () => {
     if (currentSlide < slides.length) {
       setDirection(1);
@@ -287,14 +228,6 @@ function Wrapped() {
     }
   };
 
-/**
- * Goes back to the previous slide in the Wrapped component.
- *
- * Decreases the current slide index by one if it is greater than one.
- * Sets the transition direction to backward and displays a loading
- * indicator during the transition. The slide change is delayed by 500ms to
- * allow for a smooth transition effect.
- */
   const previousSlide = () => {
     if (currentSlide > 1) {
       setDirection(-1);

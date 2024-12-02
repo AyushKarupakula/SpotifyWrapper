@@ -14,15 +14,6 @@ import { ThemeProvider } from './context/ThemeContext';
 import './App.css';
 import { LanguageProvider } from './context/LanguageContext';
 
-/**
- * A protected route that checks if the user is authenticated and
- * redirects to the login page if not.
- * 
- * @param {React.ReactNode} children - The child components to be rendered
- * if the user is authenticated.
- * @returns {React.ReactNode} The child components if the user is authenticated,
- * otherwise redirects to the login page.
- */
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
@@ -37,17 +28,6 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-/**
- * The main App component that renders all the routes.
- * 
- * This component renders the Navbar at the top, and then renders the
- * routes based on the current URL. If the user is not logged in, it
- * renders a login and register button. If the user is logged in, it
- * renders a protected route for the dashboard, wrapped, and wrap history
- * pages.
- * 
- * @returns {React.ReactNode} The rendered App component.
- */
 function AppContent() {
   const { user } = useAuth();
 
@@ -112,15 +92,6 @@ function AppContent() {
   );
 }
 
-/**
- * The top-level component of the application.
- *
- * This component wraps the entire application with
- * the LanguageProvider and the Router, and renders the
- * AppContent component inside an AuthProvider.
- *
- * @returns {React.ReactElement} - The rendered App component.
- */
 function App() {
   return (
     <LanguageProvider>
