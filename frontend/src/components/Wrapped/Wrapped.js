@@ -138,6 +138,31 @@ export const triggerConfetti = () => {
   }, 400);
 };
 
+// Replace the existing slideVariants with these cooler variants
+const slideVariants = {
+  enter: (direction) => ({
+    x: direction > 0 ? 1000 : -1000,
+    y: 0,
+    opacity: 0,
+    scale: 0.8,
+    rotate: direction > 0 ? 10 : -10,
+  }),
+  center: {
+    x: 0,
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    rotate: 0,
+  },
+  exit: (direction) => ({
+    x: direction < 0 ? 1000 : -1000,
+    y: 0,
+    opacity: 0,
+    scale: 0.8,
+    rotate: direction < 0 ? 10 : -10,
+  })
+};
+
 function Wrapped() {
   const { t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(1);
@@ -147,6 +172,7 @@ function Wrapped() {
   const [error, setError] = useState(null);
   const [timeRange, setTimeRange] = useState('medium_term');
   const [gameScore, setGameScore] = useState(null);
+  const [direction, setDirection] = useState(0);
 
   useEffect(() => {
     createWrapped(timeRange);
@@ -182,6 +208,7 @@ function Wrapped() {
 
   const nextSlide = () => {
     if (currentSlide < slides.length) {
+      setDirection(1);
       setLoading(true);
       setTimeout(() => {
         setCurrentSlide(currentSlide + 1);
@@ -192,6 +219,7 @@ function Wrapped() {
 
   const previousSlide = () => {
     if (currentSlide > 1) {
+      setDirection(-1);
       setLoading(true);
       setTimeout(() => {
         setCurrentSlide(currentSlide - 1);
@@ -485,7 +513,22 @@ function Wrapped() {
 
   return (
     <div className="wrapped-container">
-      {slides[currentSlide - 1].component}
+      <motion.div
+        key={currentSlide}
+        custom={direction}
+        variants={slideVariants}
+        initial="enter"
+        animate="center"
+        exit="exit"
+        transition={{
+          x: { type: "spring", stiffness: 200, damping: 25 },
+          opacity: { duration: 0.3 },
+          rotate: { type: "spring", stiffness: 200, damping: 25 },
+          scale: { type: "spring", stiffness: 300, damping: 25 },
+        }}
+      >
+        {slides[currentSlide - 1].component}
+      </motion.div>
     </div>
   );
 }
