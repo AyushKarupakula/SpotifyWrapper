@@ -1,5 +1,6 @@
-import React from 'react';
-import { FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { FaLink, FaCheck } from 'react-icons/fa';
 import './ShareButton.css';
 
 /**
@@ -50,32 +51,25 @@ export const ShareButton = ({ data }) => {
   };
 
   return (
-    <div className="share-buttons-container">
-      <div className="share-buttons">
-        <button
-          onClick={handleTwitterShare}
-          className="share-button twitter"
-          aria-label="Share on Twitter"
-        >
-          <FaTwitter size={24} />
-        </button>
-        
-        <button
-          onClick={handleLinkedInShare}
-          className="share-button linkedin"
-          aria-label="Share on LinkedIn"
-        >
-          <FaLinkedin size={24} />
-        </button>
-        
-        <button
-          onClick={handleInstagramShare}
-          className="share-button instagram"
-          aria-label="Share on Instagram"
-        >
-          <FaInstagram size={24} />
-        </button>
-      </div>
-    </div>
+    <motion.button
+      className="share-button"
+      onClick={handleCopyLink}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      {copied ? (
+        <>
+          <FaCheck className="share-icon" />
+          <span>Copied!</span>
+        </>
+      ) : (
+        <>
+          <FaLink className="share-icon" />
+          <span>Copy Link</span>
+        </>
+      )}
+    </motion.button>
   );
 }; 

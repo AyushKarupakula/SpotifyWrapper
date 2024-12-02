@@ -179,13 +179,18 @@ const SongGuessingGame = ({ tracks, onComplete }) => {
     if (hasGuessed) return;
 
     const track = getCurrentTrack();
-    const question = getCurrentQuestion();
+    const actualYear = new Date(track.album.release_date).getFullYear();
     setSelectedAnswer(answer);
     setHasGuessed(true);
 
-    const result = question.checkAnswer(track, answer);
-    setScore(score + result.points);
-    setFeedback(result.message);
+    // Simplified scoring - just 1 point for exact match
+    const isCorrect = answer === actualYear;
+    if (isCorrect) {
+      setScore(prevScore => prevScore + 1);
+      setFeedback('Correct! +1 point');
+    } else {
+      setFeedback(`Not quite! It was released in ${actualYear}`);
+    }
 
     setTimeout(() => {
       if (currentRound < maxRounds - 1) {
@@ -194,7 +199,7 @@ const SongGuessingGame = ({ tracks, onComplete }) => {
         setSelectedAnswer(null);
         setFeedback('');
       } else {
-        onComplete(score + result.points);
+        onComplete(score + (isCorrect ? 1 : 0));
       }
     }, 2000);
   };
@@ -209,8 +214,7 @@ const SongGuessingGame = ({ tracks, onComplete }) => {
   }
 
   const currentTrack = getCurrentTrack();
-  const currentQuestion = getCurrentQuestion();
-  const options = currentQuestion.getOptions(currentTrack, tracks);
+  const options = getYearOptions(currentTrack);
 
   return (
     <motion.div 
@@ -234,27 +238,27 @@ const SongGuessingGame = ({ tracks, onComplete }) => {
         </div>
       </div>
 
-      <p className="question">{currentQuestion.question}</p>
+      <p className="question">When was this song released?</p>
 
       <div className="options-grid">
-        {options.map((option) => (
+        {options.map((year) => (
           <motion.button
-            key={option}
+            key={year}
             className={`option-button ${
               hasGuessed
-                ? option === selectedAnswer
-                  ? currentQuestion.checkAnswer(currentTrack, option).correct
+                ? year === selectedAnswer
+                  ? year === new Date(currentTrack.album.release_date).getFullYear()
                     ? 'correct'
                     : 'incorrect'
                   : ''
                 : ''
             }`}
-            onClick={() => handleGuess(option)}
+            onClick={() => handleGuess(year)}
             disabled={hasGuessed}
             whileHover={!hasGuessed ? { scale: 1.05 } : {}}
             whileTap={!hasGuessed ? { scale: 0.95 } : {}}
           >
-            {option}
+            {year}
           </motion.button>
         ))}
       </div>
