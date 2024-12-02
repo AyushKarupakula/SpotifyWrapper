@@ -86,7 +86,7 @@
   background: linear-gradient(
     45deg,
     rgba(0, 0, 0, 0.7) 20%,
-    #1DB954 50%,
+    var(--button-background) 50%,
     rgba(0, 0, 0, 0.7) 80%
   );
   animation: wave-animation 6s linear infinite;
