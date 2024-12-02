@@ -17,6 +17,15 @@ import { LanguageProvider } from './context/LanguageContext';
 import DuoWrapped from './components/DuoWrapped/DuoWrapped';
 
 
+/**
+ * ProtectedRoute renders the given children only if the user is
+ * authenticated. Otherwise, it will redirect to the login page.
+ *
+ * @param {Object} props Component props
+ * @param {*} props.children The children to render if the user is
+ * authenticated
+ * @returns {ReactElement} A React element representing the protected route
+ */
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
@@ -31,6 +40,13 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+/**
+ * AppContent renders the main application layout.
+ *
+ * This component is a wrapper around all of the main application routes.
+ *
+ * @return {React.ReactElement} The main application layout.
+ */
 function AppContent() {
   const { user } = useAuth();
 

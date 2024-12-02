@@ -2,6 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import './SongGuessingGame.css';
 
+/**
+ * A music quiz game that asks the user to guess the release year of a song.
+ * The game displays a song and its artist, and provides 4 options for the
+ * release year. The user can select one of the options, and the game will
+ * display feedback on whether the answer is correct or not. The game keeps
+ * track of the user's score and displays it at the end of the game.
+ * @param {Object[]} tracks - An array of Spotify tracks to use for the game.
+ * @param {Function} onComplete - A callback function to call when the game is
+ *   complete. The function will be called with the final score as an argument.
+ * @returns {React.ReactElement} - A React element representing the game.
+ */
 const SongGuessingGame = ({ tracks, onComplete }) => {
   const [currentRound, setCurrentRound] = useState(0);
   const [score, setScore] = useState(0);
@@ -12,6 +23,15 @@ const SongGuessingGame = ({ tracks, onComplete }) => {
 
   const getCurrentTrack = () => tracks[currentRound];
 
+  /**
+   * Returns an array of 4 year options to display in the game for a given
+   * Spotify track. The array will contain the actual release year of the
+   * track, as well as 3 other incorrect years. The incorrect years are
+   * randomly selected to be within 3 years of the actual release year, and
+   * the array is shuffled to randomize the order of the options.
+   * @param {Object} track - A Spotify track object
+   * @returns {number[]} - An array of 4 year options
+   */
   const getYearOptions = (track) => {
     const actualYear = new Date(track.album.release_date).getFullYear();
     const yearOffsets = [-3, -2, -1, 1, 2, 3];
@@ -29,6 +49,16 @@ const SongGuessingGame = ({ tracks, onComplete }) => {
     return allYears;
   };
 
+  /**
+   * Handles the user submitting a guess for the release year of the current
+   * track. If the guess is correct, the user's score is incremented by 1, and
+   * the user is shown a success message. If the guess is incorrect, the user is
+   * shown a message with the actual release year. The game then waits 2
+   * seconds, and if the game is not yet complete, moves on to the next track.
+   * If the game is complete, calls the onComplete callback with the user's
+   * final score.
+   * @param {number} answer - The user's guess for the release year
+   */
   const handleGuess = (answer) => {
     if (hasGuessed) return;
 

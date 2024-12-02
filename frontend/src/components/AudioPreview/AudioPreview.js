@@ -1,6 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './AudioPreview.css';
 
+/**
+ * A React component that displays an audio preview with a play/pause button and
+ * displays the track name. The component also handles errors and displays a
+ * message if the audio fails to load or play.
+ *
+ * @param {string} previewUrl The URL of the audio preview.
+ * @param {string} trackName The name of the track to display.
+ * @returns {JSX.Element} The audio preview component.
+ */
+
 const AudioPreview = ({ previewUrl, trackName }) => {
   console.log(`Track: ${trackName}, Preview URL: ${previewUrl}`);
 
@@ -32,6 +42,17 @@ const AudioPreview = ({ previewUrl, trackName }) => {
     };
   }, [previewUrl]);
 
+  /**
+   * Handles play/pause of the audio preview.
+   *
+   * If the audio is currently playing, this function will pause the audio and
+   * clear the interval that is used to update the progress bar. If the audio is
+   * currently paused, this function will play the audio and set up the interval
+   * to update the progress bar.
+   *
+   * If the audio fails to play or pause, this function will catch the error and
+   * set the error state to an appropriate message.
+   */
   const handlePlay = async () => {
     if (!audioRef.current) return;
 
@@ -61,6 +82,13 @@ const AudioPreview = ({ previewUrl, trackName }) => {
     }
   };
 
+/**
+ * Handles the "ended" event on the audio element.
+ *
+ * When the audio ends, this function is called to reset the state of the audio
+ * preview. It will set the isPlaying state to false, set the progress to 0, and
+ * clear the interval used to update the progress bar.
+ */
   const handleEnded = () => {
     setIsPlaying(false);
     setProgress(0);
