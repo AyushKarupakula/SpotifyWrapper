@@ -14,6 +14,8 @@ import WrappedHistory from './components/Wrapped/WrappedHistory';
 import { ThemeProvider } from './context/ThemeContext';
 import './App.css';
 import { LanguageProvider } from './context/LanguageContext';
+import DuoWrapped from './components/DuoWrapped/DuoWrapped';
+
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -87,6 +89,11 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+      <Route path="/duo-wrapped/join/:wrapId" element={
+          <ProtectedRoute>
+            <DuoWrapped />
+          </ProtectedRoute>
+        } />    
         <Route path="/callback" element={<SpotifyCallback />} />
       </Routes>
     </div>

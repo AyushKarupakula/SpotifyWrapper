@@ -1,19 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { spotifyAPI } from '../../services/api';
-import './Wrapped.css';
-import confetti from 'canvas-confetti';
-
 // Import all the helper components from Wrapped.js
-import Wrapped, { 
-  NavigationButtons, 
-  CountdownTrack, 
-  ArtistRow, 
-  TrackRow, 
-  triggerConfetti 
-} from './Wrapped';
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';

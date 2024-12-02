@@ -10,11 +10,12 @@ import SongGuessingGame from '../Games/SongGuessingGame';
 import { ShareButton } from '../ShareButton/ShareButton';
 import { useLanguage } from '../../context/LanguageContext';
 import { FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa';
+import { useAuth } from '../../context/AuthContext';
 
 // Define components first
 export const NavigationButtons = ({ prev, next }) => {
   const { t } = useLanguage();
-  
+
   return (
     <div className="navigation-buttons">
       {prev && (
@@ -42,22 +43,22 @@ export const NavigationButtons = ({ prev, next }) => {
 };
 
 export const CountdownTrack = ({ track, number, isFinale = false }) => (
-  <motion.div 
+  <motion.div
     className={`countdown-track}`}
     initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
     transition={{ duration: 0.5 }}
   >
     <motion.div className="track-number">#{number}</motion.div>
-    <img 
-      src={track.album.images[0]?.url} 
-      alt="" 
+    <img
+      src={track.album.images[0]?.url}
+      alt=""
       className="track-image"
     />
     <div className="track-info">
       <h3>{track.name}</h3>
       <p>{track.artists[0].name}</p>
-      <AudioPreview 
+      <AudioPreview
         previewUrl={track.preview_url}
         trackName={track.name}
       />
@@ -67,16 +68,16 @@ export const CountdownTrack = ({ track, number, isFinale = false }) => (
 
 // Helper component for artist rows
 export const ArtistRow = ({ artist, rank }) => (
-  <motion.div 
+  <motion.div
     className="artist-row"
     initial={{ opacity: 0, x: -20 }}
     animate={{ opacity: 1, x: 0 }}
     transition={{ delay: rank * 0.1 }}
   >
     <div className="rank">#{rank + 1}</div>
-    <img 
-      src={artist.images[0]?.url} 
-      alt="" 
+    <img
+      src={artist.images[0]?.url}
+      alt=""
       className="artist-image"
     />
     <div className="artist-info">
@@ -88,22 +89,22 @@ export const ArtistRow = ({ artist, rank }) => (
 
 // Helper component for track rows (similar to ArtistRow)
 export const TrackRow = ({ track, rank }) => (
-  <motion.div 
+  <motion.div
     className="track-row"
     initial={{ opacity: 0, x: -20 }}
     animate={{ opacity: 1, x: 0 }}
     transition={{ delay: rank * 0.1 }}
   >
     <div className="rank">#{rank + 1}</div>
-    <img 
-      src={track.album.images[0]?.url} 
-      alt="" 
+    <img
+      src={track.album.images[0]?.url}
+      alt=""
       className="track-image"
     />
     <div className="track-info">
       <h3>{track.name}</h3>
       <p className="artist-name">{track.artists[0].name}</p>
-      <AudioPreview 
+      <AudioPreview
         previewUrl={track.preview_url}
         trackName={track.name}
       />
@@ -119,7 +120,7 @@ export const triggerConfetti = () => {
     spread: 70,
     origin: { y: 0.6 }
   });
-  
+
   // Follow-up bursts
   setTimeout(() => {
     confetti({
@@ -175,15 +176,32 @@ function Wrapped() {
   const [timeRange, setTimeRange] = useState(null);
   const [gameScore, setGameScore] = useState(null);
   const [direction, setDirection] = useState(0);
+  const [wrapId, setWrapId] = useState(null);
 
   useEffect(() => {
+    const fetchWrappedData = async () => {
+      try {
+        console.log("fetching wrapped data")
+        const response = await spotifyAPI.getWrappedData();
+        console.log(response.data)
+        setWrappedData(response.data.wrap_data);
+        setWrapId(response.data.id);
+      } catch (err) {
+        setError('Failed to load your Wrapped data');
+        console.error('Error fetching Wrapped data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWrappedData();
   }, []);
 
   const handleTimeRangeSelect = async (range) => {
     if (range === timeRange) {
       return;
     }
-    
+
     setTimeRange(range);
     await createWrapped(range);
   };
@@ -194,7 +212,7 @@ function Wrapped() {
     try {
       const response = await spotifyAPI.createWrapped(selectedRange);
       console.log('Wrapped Data Response:', response.data);
-      
+
       const formattedData = {
         topTracksRecent: { items: response.data.topTracks.items },
         topTracksAllTime: { items: response.data.topTracks.items },
@@ -204,7 +222,7 @@ function Wrapped() {
         timeRange: selectedRange,
         id: Date.now()
       };
-      
+
       setWrappedData(formattedData);
 
       // Clear existing history and store only this wrap
@@ -268,12 +286,13 @@ function Wrapped() {
       component: (
         <motion.div className="wrapped-slide welcome-slide">
           <motion.h1>{t('welcome.title')}</motion.h1>
-          <TimeRangeSelector 
+          <TimeRangeSelector
             onSelect={handleTimeRangeSelect}
             selectedRange={timeRange}
             loading={loadingTimeRange}
           />
           {wrappedData && <NavigationButtons next={nextSlide} />}
+          <ShareDuoButton wrappedData={wrappedData} wrapId={wrapId} />
         </motion.div>
       ),
     },
@@ -286,9 +305,9 @@ function Wrapped() {
           <motion.p className="story-text">{t('slides.artistsOnRepeat')}</motion.p>
           <div className="artists-list">
             {wrappedData?.topArtistsRecent?.items?.slice(0, 5).map((artist, index) => (
-              <ArtistRow 
-                key={artist.id} 
-                artist={artist} 
+              <ArtistRow
+                key={artist.id}
+                artist={artist}
                 rank={index}
               />
             ))}
@@ -306,9 +325,9 @@ function Wrapped() {
           <motion.p className="story-text">{t('slides.artistsThroughItAll')}</motion.p>
           <div className="artists-list">
             {wrappedData?.topArtistsAllTime?.items?.slice(0, 5).map((artist, index) => (
-              <ArtistRow 
-                key={artist.id} 
-                artist={artist} 
+              <ArtistRow
+                key={artist.id}
+                artist={artist}
                 rank={index}
               />
             ))}
@@ -326,9 +345,9 @@ function Wrapped() {
           <motion.p className="story-text">{t('slides.neverGetOld')}</motion.p>
           <div className="tracks-list">
             {wrappedData?.topTracksAllTime?.items?.slice(0, 5).map((track, index) => (
-              <TrackRow 
-                key={track.id} 
-                track={track} 
+              <TrackRow
+                key={track.id}
+                track={track}
                 rank={index}
               />
             ))}
@@ -341,7 +360,7 @@ function Wrapped() {
     // Slide 5: Intro to Recent Favorites (But Wait slide)
     {
       component: (
-        <motion.div 
+        <motion.div
           className="wrapped-slide"  // Just using wrapped-slide class
         >
           <motion.h2>{t('slides.butWait')}</motion.h2>
@@ -383,7 +402,7 @@ function Wrapped() {
     // Slide 8: #1 Recent Favorite
     {
       component: (
-        <motion.div 
+        <motion.div
           className="wrapped-slide"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -398,12 +417,12 @@ function Wrapped() {
           </motion.h2>
           {wrappedData?.topTracksRecent?.items?.[0] && (
             <>
-              <motion.img 
-                src={wrappedData.topTracksRecent.items[0].album.images[0]?.url} 
-                alt="" 
+              <motion.img
+                src={wrappedData.topTracksRecent.items[0].album.images[0]?.url}
+                alt=""
                 className="track-image"
                 initial={{ scale: 0.9 }}
-                animate={{ 
+                animate={{
                   scale: 1,
                   rotate: [0, -3, 3, -3, 0]
                 }}
@@ -417,7 +436,7 @@ function Wrapped() {
                   }
                 }}
               />
-              <motion.h3 
+              <motion.h3
                 className="finale-song-name"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -425,7 +444,7 @@ function Wrapped() {
               >
                 {wrappedData.topTracksRecent.items[0].name}
               </motion.h3>
-              <motion.p 
+              <motion.p
                 className="finale-artist-name"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -438,7 +457,7 @@ function Wrapped() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
-                <AudioPreview 
+                <AudioPreview
                   previewUrl={wrappedData.topTracksRecent.items[0].preview_url}
                   trackName={wrappedData.topTracksRecent.items[0].name}
                 />
@@ -458,7 +477,7 @@ function Wrapped() {
           <motion.div className="recap-content">
             <motion.p className="story-text">{t('slides.fromTimeless')}</motion.p>
             <motion.p className="story-text">{t('slides.journey')}</motion.p>
-            
+
             <div className="share-options">
               <ShareButton />
               <div className="social-buttons">
@@ -473,7 +492,7 @@ function Wrapped() {
                 >
                   <FaTwitter size={24} color="white" />
                 </motion.a>
-                
+
                 <motion.a
                   href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
                   target="_blank"
@@ -485,12 +504,12 @@ function Wrapped() {
                 >
                   <FaLinkedin size={24} color="white" />
                 </motion.a>
-                
+
                 <motion.button
                   onClick={() => {
                     // Create a message for Instagram Stories
                     const text = `Check out my Spotify Wrapped!\n\nTop Artist: ${wrappedData?.topArtistsRecent?.items[0]?.name}\nTop Track: ${wrappedData?.topTracksRecent?.items[0]?.name}`;
-                    
+
                     // Open Instagram app if on mobile, otherwise open Instagram website
                     if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                       window.location.href = `instagram://story-camera`;
@@ -529,7 +548,7 @@ function Wrapped() {
     {
       component: (
         <motion.div className="wrapped-slide game-slide">
-          <SongGuessingGame 
+          <SongGuessingGame
             tracks={wrappedData?.topTracksRecent?.items || []}
             onComplete={(score) => {
               setGameScore(score);
@@ -560,11 +579,12 @@ function Wrapped() {
             <div className="score">{gameScore}/3</div>
             <p>{
               gameScore === 3 ? "Perfect! You really know your music!" :
-              gameScore === 2 ? "Great job! You're quite familiar with your top tracks!" :
-              gameScore === 1 ? "Not bad! Keep listening to discover more!" :
-              "Time to spend more time with your favorite tracks!"
+                gameScore === 2 ? "Great job! You're quite familiar with your top tracks!" :
+                  gameScore === 1 ? "Not bad! Keep listening to discover more!" :
+                    "Time to spend more time with your favorite tracks!"
             }</p>
           </motion.div>
+
           <NavigationButtons prev={previousSlide} />
         </motion.div>
       ),
@@ -592,5 +612,36 @@ function Wrapped() {
     </div>
   );
 }
+export const ShareDuoButton = ({ wrappedData, wrapId }) => {
+  const { user } = useAuth();
+  const [copied, setCopied] = useState(false);
+
+  const generateDuoLink = () => {
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/duo-wrapped/join/${wrapId}?sharedBy=${encodeURIComponent(user.username)}`;
+  };
+
+
+  const handleCopyLink = () => {
+    console.log("clicked")
+    console.log(wrapId);
+    console.log(user);
+    navigator.clipboard.writeText(generateDuoLink());
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <motion.button
+      className="share-duo-button"
+      onClick={handleCopyLink}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      disabled={!wrapId}
+    >
+      {copied ? 'Link Copied!' : 'Create Duo Wrapped Link'}
+    </motion.button>
+  );
+};
 
 export default Wrapped;

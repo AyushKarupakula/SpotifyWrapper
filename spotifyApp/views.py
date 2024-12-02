@@ -238,7 +238,7 @@ def get_wrapped_data(request):
     try:
         spotify = SpotifyAPI()
         token_info = request.session.get('spotify_token')
-
+        
         if not token_info:
             return Response(
                 {'error': 'No Spotify token found. Please reconnect your account.'},
@@ -246,16 +246,42 @@ def get_wrapped_data(request):
             )
 
         access_token = token_info['access_token']
+
+        # Fetch data with error handling
         wrapped_data = {
-            'topTracksRecent': spotify.get_user_top_items(access_token, 'tracks', 'short_term', 20),
-            'topTracksAllTime': spotify.get_user_top_items(access_token, 'tracks', 'long_term', 20),
-            'topArtistsRecent': spotify.get_user_top_items(access_token, 'artists', 'short_term', 20),
-            'topArtistsAllTime': spotify.get_user_top_items(access_token, 'artists', 'long_term', 20)
+            'topTracksRecent': spotify.get_user_top_items(
+                access_token, 'tracks', 'short_term', 20
+            ),
+            'topTracksAllTime': spotify.get_user_top_items(
+                access_token, 'tracks', 'long_term', 20
+            ),
+            'topArtistsRecent': spotify.get_user_top_items(
+                access_token, 'artists', 'short_term', 20
+            ),
+            'topArtistsAllTime': spotify.get_user_top_items(
+                access_token, 'artists', 'long_term', 20
+            )
         }
 
-        return Response(wrapped_data)
+        # Save to database
+        wrap = SpotifyWrap.objects.create(
+            user=request.user,
+            wrap_data=wrapped_data,
+            title=f"Wrap - {datetime.now().strftime('%Y-%m-%d')}"
+        )
+
+        # Return both the data and the wrap ID
+        return Response({
+            'id': wrap.id,  # Include the database ID
+            'wrap_data': wrapped_data
+        })
+
     except Exception as e:
-        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        print(f"Error in get_wrapped_data: {str(e)}")
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 @api_view(['GET'])
