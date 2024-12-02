@@ -7,16 +7,17 @@
 .language-select {
   padding: 8px 12px;
   border-radius: 20px;
-  border: 2px solid #1DB954;
+  border: 2px solid var(--button-background);
   background: rgba(0, 0, 0, 0.3);
-  color: white;
+  color: var(--text-color);
   cursor: pointer;
   font-size: 14px;
   transition: all 0.3s ease;
 }
 
 .language-select:hover {
-  background: rgba(29, 185, 84, 0.1);
+  background: var(--button-hover);
+  color: var(--background-color);
 }
 
 .language-select option {
