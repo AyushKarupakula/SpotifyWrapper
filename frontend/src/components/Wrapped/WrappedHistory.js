@@ -1,260 +1,168 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { spotifyAPI } from '../../services/api';
-import './Wrapped.css';
-import confetti from 'canvas-confetti';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '../../context/LanguageContext';
+import { TrackRow, ArtistRow } from './Wrapped';
+import './WrappedHistory.css';
 
-// Import all the helper components from Wrapped.js
-import Wrapped, { 
-  NavigationButtons, 
-  CountdownTrack, 
-  ArtistRow, 
-  TrackRow, 
-  triggerConfetti 
-} from './Wrapped';
-
+/**
+ * A component that displays the user's Spotify Wrapped history.
+ *
+ * Fetches the wraps from local storage and removes duplicates based on timestamp.
+ * Sorts the wraps by timestamp, most recent first.
+ *
+ * If the user hasn't generated any wraps yet, a message will be displayed
+ * prompting them to generate their first wrap.
+ *
+ * When a wrap is clicked, it will expand to show the top artists and tracks for
+ * that wrap.
+ */
 function WrappedHistory() {
-  const [currentSlide, setCurrentSlide] = useState(1);
-  const [wrappedData, setWrappedData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const { wrapId } = useParams();  // Get the wrap ID from URL
-
-  useEffect(() => {
-    const fetchHistoricalWrap = async () => {
-      try {
-        const response = await spotifyAPI.getWrapDetail(wrapId);
-        setWrappedData(response.data); // Note: adjust this based on your API response structure
-      } catch (err) {
-        setError('Failed to load this Wrapped data');
-        console.error('Error fetching historical Wrapped data:', err);
-      } finally {
-        setLoading(false);
+  const { t } = useLanguage();
+  const [selectedWrap, setSelectedWrap] = useState(null);
+  
+  const wrappedHistory = React.useMemo(() => {
+    const wraps = JSON.parse(localStorage.getItem('wrappedHistory') || '[]');
+    const uniqueWraps = wraps.reduce((acc, current) => {
+      const x = acc.find(item => item.timeRange === current.timeRange);
+      if (!x) {
+        return acc.concat([current]);
+      } else {
+        return acc;
       }
-    };
+    }, []);
+    
+    return uniqueWraps.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  }, []);
 
-    fetchHistoricalWrap();
-  }, [wrapId]);
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      month: 'long', 
+      day: 'numeric', 
+      year: 'numeric'
+    });
+  };
 
-  // Rest of the code is identical to Wrapped.js
-  const nextSlide = () => {
-    if (currentSlide < slides.length) {
-      setCurrentSlide(currentSlide + 1);
+  const getTimeRangeText = (timeRange) => {
+    switch(timeRange) {
+      case 'short_term':
+        return 'Last 4 Weeks';
+      case 'medium_term':
+        return 'Last 6 Months';
+      case 'long_term':
+        return 'All Time';
+      default:
+        return '';
     }
   };
 
-  const previousSlide = () => {
-    if (currentSlide > 1) {
-      setCurrentSlide(currentSlide - 1);
-    }
+  if (wrappedHistory.length === 0) {
+    return (
+      <div className="wrapped-history-container">
+        <h2>{t('wrappedHistory.noHistory')}</h2>
+        <p>{t('wrappedHistory.generateFirst')}</p>
+      </div>
+    );
+  }
+
+  /**
+   * Handles a click event on a wrap in the wrapped history list.
+   * Toggles the selected wrap between the given wrap and null.
+   * @param {Object} wrap - The wrap that was clicked.
+   */
+  const handleWrapClick = (wrap) => {
+    setSelectedWrap(selectedWrap?.timestamp === wrap.timestamp ? null : wrap);
   };
-
-  if (loading) return <div className="wrapped-loading">Loading your musical journey...</div>;
-  if (error) return <div className="wrapped-error">{error}</div>;
-  if (!wrappedData) return <div className="wrapped-error">No data available</div>;
-
-  // Use the same slides array as in Wrapped.js
-  const slides = [
-    // Slide 1: Intro
-    {
-      component: (
-        <motion.div className="wrapped-slide welcome-slide">
-          <motion.h1>Your 2024 Wrapped</motion.h1>
-          <motion.p>Let's dive into the soundtrack of your year...</motion.p>
-          <NavigationButtons next={nextSlide} />
-        </motion.div>
-      ),
-    },
-
-    // Slide 2: Current Favorite Artists
-    {
-      component: (
-        <motion.div className="wrapped-slide artist-highlight">
-          <motion.h2>Your Recent Obsessions</motion.h2>
-          <motion.p className="story-text">These artists have been on repeat lately...</motion.p>
-          <div className="artists-list">
-            {wrappedData?.topArtistsRecent?.items?.slice(0, 5).map((artist, index) => (
-              <ArtistRow 
-                key={artist.id} 
-                artist={artist} 
-                rank={index}
-              />
-            ))}
-          </div>
-          <NavigationButtons prev={previousSlide} next={nextSlide} />
-        </motion.div>
-      ),
-    },
-
-    // Slide 3: All-Time Favorite Artists
-    {
-      component: (
-        <motion.div className="wrapped-slide artist-highlight">
-          <motion.h2>Your All-Time Favorites</motion.h2>
-          <motion.p className="story-text">The artists who've been there through it all...</motion.p>
-          <div className="artists-list">
-            {wrappedData?.topArtistsAllTime?.items?.slice(0, 5).map((artist, index) => (
-              <ArtistRow 
-                key={artist.id} 
-                artist={artist} 
-                rank={index}
-              />
-            ))}
-          </div>
-          <NavigationButtons prev={previousSlide} next={nextSlide} />
-        </motion.div>
-      ),
-    },
-
-    // Slide 4: All-Time Favorite Songs
-    {
-      component: (
-        <motion.div className="wrapped-slide all-time-tracks">
-          <motion.h2>Your Timeless Tracks</motion.h2>
-          <motion.p className="story-text">The songs that never get old...</motion.p>
-          <div className="tracks-list">
-            {wrappedData?.topTracksAllTime?.items?.slice(0, 5).map((track, index) => (
-              <TrackRow 
-                key={track.id} 
-                track={track} 
-                rank={index}
-              />
-            ))}
-          </div>
-          <NavigationButtons prev={previousSlide} next={nextSlide} />
-        </motion.div>
-      ),
-    },
-
-    // Slide 5: Intro to Recent Favorites (But Wait slide)
-    {
-      component: (
-        <motion.div 
-          className="wrapped-slide"  // Just using wrapped-slide class
-        >
-          <motion.h2>But Wait...</motion.h2>
-          <motion.p className="story-text">Let's see what's been dominating your playlists recently</motion.p>
-          <motion.p className="story-text-small">Your top 3 tracks of the moment coming up...</motion.p>
-          <NavigationButtons prev={previousSlide} next={nextSlide} />
-        </motion.div>
-      ),
-    },
-
-    // Slide 6: #3 Recent Favorite
-    {
-      component: (
-        <motion.div className="wrapped-slide countdown-slide">
-          <motion.h2>Starting With #3</motion.h2>
-          <motion.p className="story-text">A recent addition to your favorites...</motion.p>
-          {wrappedData?.topTracksRecent?.items?.[2] && (
-            <CountdownTrack track={wrappedData.topTracksRecent.items[2]} number={3} />
-          )}
-          <NavigationButtons prev={previousSlide} next={nextSlide} />
-        </motion.div>
-      ),
-    },
-
-    // Slide 7: #2 Recent Favorite
-    {
-      component: (
-        <motion.div className="wrapped-slide">
-          <motion.h2>Your #2 Recent Obsession</motion.h2>
-          <motion.p className="story-text">A recent addition to your favorites...</motion.p>
-          {wrappedData?.topTracksRecent?.items?.[1] && (
-            <CountdownTrack track={wrappedData.topTracksRecent.items[1]} number={2} />
-          )}
-          <NavigationButtons prev={previousSlide} next={nextSlide} />
-        </motion.div>
-      ),
-    },
-
-    // Slide 8: #1 Recent Favorite
-    {
-      component: (
-        <motion.div 
-          className="wrapped-slide"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          onAnimationComplete={() => setTimeout(triggerConfetti, 100)}
-        >
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            Your #1 Obsession
-          </motion.h2>
-          <motion.p 
-            className="story-text"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            The song you just can't get enough of...
-          </motion.p>
-          {wrappedData?.topTracksRecent?.items?.[0] && (
-            <>
-              <motion.img 
-                src={wrappedData.topTracksRecent.items[0].album.images[0]?.url} 
-                alt="" 
-                className="track-image"
-                initial={{ scale: 0.9 }}
-                animate={{ 
-                  scale: 1,
-                  rotate: [0, -3, 3, -3, 0]
-                }}
-                transition={{
-                  duration: 1,
-                  ease: "easeOut",
-                  rotate: {
-                    duration: 1.5,
-                    ease: "easeInOut",
-                    delay: 0.2
-                  }
-                }}
-              />
-              <motion.h3 
-                className="finale-song-name"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                {wrappedData.topTracksRecent.items[0].name}
-              </motion.h3>
-              <motion.p 
-                className="finale-artist-name"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                {wrappedData.topTracksRecent.items[0].artists[0].name}
-              </motion.p>
-            </>
-          )}
-          <NavigationButtons prev={previousSlide} next={nextSlide} />
-        </motion.div>
-      ),
-    },
-
-    // Slide 9: Recap
-    {
-      component: (
-        <motion.div className="wrapped-slide recap-slide">
-          <motion.h2>That's a Wrap!</motion.h2>
-          <motion.div className="recap-content">
-            <motion.p className="story-text">From timeless favorites to new discoveries...</motion.p>
-            <motion.p className="story-text">Your musical journey continues to evolve</motion.p>
-          </motion.div>
-          <NavigationButtons prev={previousSlide} />
-        </motion.div>
-      ),
-    },
-  ];
 
   return (
-    <div className="wrapped-container">
-      {slides[currentSlide - 1].component}
+    <div className="wrapped-history-container">
+      <h2>{t('wrappedHistory.title')}</h2>
+      {wrappedHistory.map((wrap, index) => (
+        <motion.div 
+          key={wrap.timestamp}
+          className={`wrap-entry ${selectedWrap?.timestamp === wrap.timestamp ? 'selected' : ''}`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1 }}
+          onClick={() => handleWrapClick(wrap)}
+        >
+          <h3>
+            {formatDate(wrap.timestamp)} • {getTimeRangeText(wrap.timeRange)}
+          </h3>
+          
+          <AnimatePresence>
+            {selectedWrap?.timestamp === wrap.timestamp && (
+              <motion.div 
+                className="wrap-content"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="top-tracks-section">
+                  <h4>Your Recent Favorites</h4>
+                  <p className="section-description">The songs that have been on repeat lately...</p>
+                  {wrap.topTracksRecent?.items?.slice(0, 5).map((track, idx) => (
+                    <TrackRow 
+                      key={track.id} 
+                      track={track} 
+                      rank={idx}
+                    />
+                  ))}
+                </div>
+
+                <div className="top-tracks-section timeless">
+                  <h4>Your Timeless Tracks</h4>
+                  <p className="section-description">The songs that never get old...</p>
+                  {wrap.topTracksAllTime?.items?.slice(0, 5).map((track, idx) => (
+                    <TrackRow 
+                      key={track.id} 
+                      track={track} 
+                      rank={idx}
+                    />
+                  ))}
+                </div>
+
+                <div className="top-artists-section">
+                  <h4>Your Top Artists</h4>
+                  <p className="section-description">These artists have been on repeat...</p>
+                  {wrap.topArtistsRecent?.items?.slice(0, 5).map((artist, idx) => (
+                    <ArtistRow 
+                      key={artist.id} 
+                      artist={artist} 
+                      rank={idx}
+                    />
+                  ))}
+                </div>
+
+                <div className="stats-section">
+                  <h4>Quick Stats</h4>
+                  <div className="stats-grid">
+                    <div className="stat-item">
+                      <span className="stat-label">Top Genre</span>
+                      <span className="stat-value">
+                        {wrap.topArtistsRecent?.items[0]?.genres?.[0] || 'N/A'}
+                      </span>
+                    </div>
+                    <div className="stat-item">
+                      <span className="stat-label">Most Played Artist</span>
+                      <span className="stat-value">
+                        {wrap.topArtistsRecent?.items[0]?.name || 'N/A'}
+                      </span>
+                    </div>
+                    <div className="stat-item">
+                      <span className="stat-label">Most Played Track</span>
+                      <span className="stat-value">
+                        {wrap.topTracksRecent?.items[0]?.name || 'N/A'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      ))}
     </div>
   );
 }

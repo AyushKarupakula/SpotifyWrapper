@@ -1,7 +1,41 @@
+:root {
+  --background-color: #121212;
+  --background-color2: #282828;
+  --background-color3: #363636;
+  --text-color: #ffffff;
+  --button-background: #1DB954;
+  --button-hover: #ffffff;
+  --button-hover-text: #1ED760;
+
+  --form-background: #404040;
+  --window-background: #1DB954;
+
+  --navbar-background: #1DB954;
+  --navbar-link-color: white;
+  --navbar-hover-background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] {
+  --background-color: #ffffff;
+  --background-color2: #f0f0f0;
+  --background-color3: #dfdfdf;
+  --text-color: #121212;
+  --button-background: #1e90ff;
+  --button-hover: #121212;
+  --button-hover-text: #1e90ff;
+
+  --form-background: #afafaf;
+  --window-background: #4285F4;
+
+  --navbar-background: #1e90ff; /* Blue navbar background */
+  --navbar-link-color: #121212; /* Darker link color for contrast */
+  --navbar-hover-background: rgba(0, 0, 0, 0.1);
+}
+
 .App {
   min-height: 100vh;
-  background-color: #121212;
-  color: white;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 .App-header {
@@ -12,6 +46,8 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
+  position: relative; /* Ensure it sits above the background */
+  z-index: 1;
 }
 
 .auth-buttons {
@@ -22,8 +58,8 @@
 
 .auth-buttons .auth-button {
   padding: 0.75rem 2rem;
-  background-color: #1DB954;
-  color: white;
+  background-color: var(--button-background);
+  color: var(--text-color);
   text-decoration: none;
   border-radius: 20px;
   font-weight: bold;
@@ -31,5 +67,70 @@
 }
 
 .auth-buttons .auth-button:hover {
-  background-color: #1ed760;
-} 
+  background-color: var(--button-hover);
+  color: var(--background-color);
+}
+
+/* Navbar Styles */
+.navbar {
+  position: relative;
+  z-index: 10; /* Bring navbar above the wave background */
+}
+
+/* Wave Effect */
+.wave-background {
+  position: absolute;
+  top: 0px; /* Start below the navbar */
+  left: 0;
+  width: 200%;
+  height: calc(100%); /* Subtract navbar height */
+  background: linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.7) 20%,
+    var(--button-background) 50%,
+    rgba(0, 0, 0, 0.7) 80%
+  );
+  animation: wave-animation 6s linear infinite;
+  z-index: -1; /* Place behind all other elements */
+}
+
+/* Wave Animation */
+@keyframes wave-animation {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Glowing Text */
+.glowing-text {
+  font-size: 3rem;
+  color: #000000; /* Black text */
+  text-shadow:
+    0 0 10px #ffffff,
+    0 0 20px #ffffff,
+    0 0 30px #ffffff,
+    0 0 40px #ffffff; /* White glow */
+  animation: glow-animation 3s infinite ease-in-out;
+}
+
+/* Glow Animation */
+@keyframes glow-animation {
+  0%,
+  100% {
+    text-shadow:
+      0 0 10px #ffffff,
+      0 0 20px #ffffff,
+      0 0 30px #ffffff,
+      0 0 40px #ffffff;
+  }
+  50% {
+    text-shadow:
+      0 0 5px #ffffff,
+      0 0 10px #ffffff,
+      0 0 20px #ffffff,
+      0 0 30px #ffffff;
+  }
+}

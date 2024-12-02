@@ -10,6 +10,17 @@ from django.middleware.csrf import get_token
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_view(request):
+    """
+    Logs in a user and returns the user data.
+
+    Args:
+        request: The HTTP request containing the user's credentials.
+
+    Returns:
+        A JSON response containing the user data if the credentials are valid, 
+        otherwise an error message with a 401 status.
+    """
+
     username = request.data.get('username')
     password = request.data.get('password')
     
@@ -26,6 +37,16 @@ def login_view(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_view(request):
+    """
+    Registers a new user.
+
+    Args:
+        request: The HTTP request containing the new user's data.
+
+    Returns:
+        A JSON response containing the user data if the registration is successful, 
+        otherwise an error message with an appropriate HTTP status.
+    """
     try:
         print("Registration data received:", request.data)  # Debug print
         print("Request headers:", request.headers)  # Debug print
@@ -57,6 +78,16 @@ def register_view(request):
 @permission_classes([IsAuthenticated])
 def logout_view(request):
     # Clear Spotify token from session
+    """
+    Logs out the user and clears the Spotify token from the session.
+
+    Args:
+        request: The HTTP request.
+
+    Returns:
+        A JSON response containing a success message.
+    """
+
     if 'spotify_token' in request.session:
         del request.session['spotify_token']
     logout(request)
@@ -65,10 +96,46 @@ def logout_view(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_view(request):
+    """
+    Retrieves the authenticated user's data.
+
+    Args:
+        request: The HTTP request with the authenticated user's details.
+
+    Returns:
+        A JSON response containing the user's data.
+    """
+    
     serializer = UserSerializer(request.user)
     return Response(serializer.data)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def csrf_token(request):
+    """
+    Retrieves a CSRF token for the authenticated user.
+
+    Args:
+        request: The HTTP request with the authenticated user's details.
+
+    Returns:
+        A JSON response containing the CSRF token.
+    """
     return Response({'csrfToken': get_token(request)})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def delete_account(request):
+    """
+    Deletes the authenticated user's account.
+
+    Args:
+        request: The HTTP request with the authenticated user's details.
+
+    Returns:
+        A JSON response containing a success message.
+    """
+    
+    user = request.user
+    user.delete()
+    return Response({'message': 'Account deleted successfully'}, status=200)

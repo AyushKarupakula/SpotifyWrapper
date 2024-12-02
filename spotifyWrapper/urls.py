@@ -1,27 +1,29 @@
 """
 URL configuration for spotifyWrapper project.
 
-The `urlpatterns` list routes URLs to views. For more information please see:
+This module defines the URL routing for the Django application. 
+The `urlpatterns` list routes URLs to their corresponding views or applications.
+
+Routes:
+    - Admin: Provides access to Django's admin interface.
+    - User Authentication: Includes URLs for user authentication APIs.
+    - Spotify API: Includes URLs for Spotify API integration.
+    - Spotify Callback: Handles callback routing for Spotify OAuth.
+    - Default Redirect: Redirects the base URL to the frontend application.
+
+For more information, see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
 
+# URL patterns for the application
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/auth/', include('userAuth.urls')),
-    path('api/spotify/', include('spotifyApp.urls')),
-    path('spotify/callback/', include('spotifyApp.urls')),  # Add this line
-    path('', RedirectView.as_view(url='http://localhost:3000')),
+    path('admin/', admin.site.urls),  # Django admin interface
+    path('api/auth/', include('userAuth.urls')),  # User authentication endpoints
+    path('api/spotify/', include('spotifyApp.urls')),  # Spotify API endpoints
+    path('spotify/callback/', include('spotifyApp.urls')),  # Spotify OAuth callback
+    path('', RedirectView.as_view(url='http://localhost:3000')),  # Redirect to frontend
 ]

@@ -12,4 +12,5 @@ urlpatterns = [
     path('wraps/<int:wrap_id>/', views.get_wrap_detail, name='wrap-detail'),
     path('wraps/latest/', views.get_latest_wrap, name='latest-wrap'),
     path('wraps/<int:wrap_id>/delete/', views.delete_wrap, name='delete-wrap'),
+    path('wrapped/create/', views.create_wrapped_data, name='create-wrapped'),
 ]

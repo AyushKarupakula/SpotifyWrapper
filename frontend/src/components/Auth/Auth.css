@@ -3,22 +3,23 @@
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 64px);
-  background-color: #121212;
+  background-color: var(--background-color);
 }
 
 .auth-form {
-  background-color: #282828;
+  background-color: var(--background-color2);
   padding: 2rem;
   border-radius: 8px;
   width: 100%;
   max-width: 400px;
-  color: white;
+  color: var(--text-color);
+  margin: 0 auto;
 }
 
 .auth-form h2 {
   text-align: center;
   margin-bottom: 2rem;
-  color: #1DB954;
+  color: var(--button-background);
 }
 
 .form-group {
@@ -26,19 +27,19 @@
 }
 
 .form-group input {
-  width: 100%;
+  width: 94%; /* prevents input from misaligning with button */
   padding: 0.75rem;
   border: none;
   border-radius: 4px;
-  background-color: #404040;
-  color: white;
+  background-color: var(--form-background);
+  color: var(--text-color);
 }
 
 .auth-button {
   width: 100%;
   padding: 0.75rem;
-  background-color: #1DB954;
-  color: white;
+  background-color: var(--button-background);
+  color: var(--text-color);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -47,7 +48,7 @@
 }
 
 .auth-button:hover {
-  background-color: #1ed760;
+  background-color: var(--button-hover);
 }
 
 .error-message {
@@ -58,3 +59,137 @@
   margin-bottom: 1rem;
   text-align: center;
 } 
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background-color: var(--background-color);
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.profile-username {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.delete-account-button {
+  background-color: var(--button-background);
+  color: var(--text-color);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.delete-account-button:hover {
+  background-color: var(--button-hover);
+}
+/* Profile Container */
+.profile-container {
+  padding: 2rem;
+  background-color: var(--background-color);
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Two-Column Layout */
+.profile-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.profile-left {
+  flex: 1;
+  min-width: 300px;
+  padding: 1rem;
+  background-color: var(--background-color2);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.profile-right {
+  flex: 2;
+  min-width: 300px;
+  padding: 1rem;
+  background-color: var(--background-color2);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Profile Left Section */
+.profile-header {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.profile-username {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.delete-button {
+  background-color: var(--button-background);
+  color: var(--text-color);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+  background-color: var(--button-hover);
+}
+
+/* Developer Cards (Right Section) */
+.developers-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.developer-card {
+  background-color: var(--background-color3);
+  padding: 0.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 200px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.developer-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.developer-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--button-background);
+  margin-bottom: 0.5rem;
+}
+
+.developer-email {
+  font-size: 0.9rem;
+  color: var(--text-color);
+  word-wrap: break-word;
+}
