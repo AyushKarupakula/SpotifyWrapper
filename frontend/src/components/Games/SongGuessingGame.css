@@ -111,4 +111,44 @@
     width: 150px;
     height: 150px;
   }
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 0 15px;
+  transform: translateX(-10px);
+}
+
+.option-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 25px;
+  padding: 15px 20px;
+  color: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin: 5px 0;
+}
+
+.option-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.option-button:disabled {
+  cursor: default;
+}
+
+.option-button.correct {
+  background: #1DB954;
+}
+
+.option-button.incorrect {
+  background: #E4405F;
 } 

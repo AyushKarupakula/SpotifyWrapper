@@ -20,7 +20,6 @@ function WrappedHistory() {
   const { t } = useLanguage();
   const [selectedWrap, setSelectedWrap] = useState(null);
   
-  // Get wraps and remove duplicates based on timestamp
   const wrappedHistory = React.useMemo(() => {
     const wraps = JSON.parse(localStorage.getItem('wrappedHistory') || '[]');
     const uniqueWraps = wraps.reduce((acc, current) => {
@@ -32,9 +31,30 @@ function WrappedHistory() {
       }
     }, []);
     
-    // Sort by timestamp, most recent first
     return uniqueWraps.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   }, []);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      month: 'long', 
+      day: 'numeric', 
+      year: 'numeric'
+    });
+  };
+
+  const getTimeRangeText = (timeRange) => {
+    switch(timeRange) {
+      case 'short_term':
+        return 'Last 4 Weeks';
+      case 'medium_term':
+        return 'Last 6 Months';
+      case 'long_term':
+        return 'All Time';
+      default:
+        return '';
+    }
+  };
 
   if (wrappedHistory.length === 0) {
     return (
@@ -67,10 +87,7 @@ function WrappedHistory() {
           onClick={() => handleWrapClick(wrap)}
         >
           <h3>
-            {new Date(wrap.timestamp).toLocaleDateString()} - 
-            {wrap.timeRange === 'short_term' ? t('timeRange.shortTerm') :
-             wrap.timeRange === 'medium_term' ? t('timeRange.mediumTerm') :
-             t('timeRange.longTerm')}
+            {formatDate(wrap.timestamp)} • {getTimeRangeText(wrap.timeRange)}
           </h3>
           
           <AnimatePresence>
@@ -82,8 +99,33 @@ function WrappedHistory() {
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
               >
+                <div className="top-tracks-section">
+                  <h4>Your Recent Favorites</h4>
+                  <p className="section-description">The songs that have been on repeat lately...</p>
+                  {wrap.topTracksRecent?.items?.slice(0, 5).map((track, idx) => (
+                    <TrackRow 
+                      key={track.id} 
+                      track={track} 
+                      rank={idx}
+                    />
+                  ))}
+                </div>
+
+                <div className="top-tracks-section timeless">
+                  <h4>Your Timeless Tracks</h4>
+                  <p className="section-description">The songs that never get old...</p>
+                  {wrap.topTracksAllTime?.items?.slice(0, 5).map((track, idx) => (
+                    <TrackRow 
+                      key={track.id} 
+                      track={track} 
+                      rank={idx}
+                    />
+                  ))}
+                </div>
+
                 <div className="top-artists-section">
-                  <h4>{t('wrappedHistory.topArtists')}</h4>
+                  <h4>Your Top Artists</h4>
+                  <p className="section-description">These artists have been on repeat...</p>
                   {wrap.topArtistsRecent?.items?.slice(0, 5).map((artist, idx) => (
                     <ArtistRow 
                       key={artist.id} 
@@ -93,15 +135,28 @@ function WrappedHistory() {
                   ))}
                 </div>
 
-                <div className="top-tracks-section">
-                  <h4>{t('wrappedHistory.topTracks')}</h4>
-                  {wrap.topTracksRecent?.items?.slice(0, 5).map((track, idx) => (
-                    <TrackRow 
-                      key={track.id} 
-                      track={track} 
-                      rank={idx}
-                    />
-                  ))}
+                <div className="stats-section">
+                  <h4>Quick Stats</h4>
+                  <div className="stats-grid">
+                    <div className="stat-item">
+                      <span className="stat-label">Top Genre</span>
+                      <span className="stat-value">
+                        {wrap.topArtistsRecent?.items[0]?.genres?.[0] || 'N/A'}
+                      </span>
+                    </div>
+                    <div className="stat-item">
+                      <span className="stat-label">Most Played Artist</span>
+                      <span className="stat-value">
+                        {wrap.topArtistsRecent?.items[0]?.name || 'N/A'}
+                      </span>
+                    </div>
+                    <div className="stat-item">
+                      <span className="stat-label">Most Played Track</span>
+                      <span className="stat-value">
+                        {wrap.topTracksRecent?.items[0]?.name || 'N/A'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             )}

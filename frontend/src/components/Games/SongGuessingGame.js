@@ -163,8 +163,10 @@ const SongGuessingGame = ({ tracks, onComplete }) => {
     }
   ];
 
+
   const getCurrentQuestion = () => questionTypes[currentRound % questionTypes.length];
   const getCurrentTrack = () => tracks[currentRound];
+
 
 /**
  * Handles the user's guess by checking the answer against the current question.
