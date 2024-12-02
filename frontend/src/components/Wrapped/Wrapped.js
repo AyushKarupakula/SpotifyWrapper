@@ -175,8 +175,17 @@ function Wrapped() {
   const [direction, setDirection] = useState(0);
 
   useEffect(() => {
-    createWrapped(timeRange);
+    setTimeRange('medium_term');
   }, []);
+
+  const handleTimeRangeSelect = async (range) => {
+    if (range === timeRange) {
+      return;
+    }
+    
+    setTimeRange(range);
+    await createWrapped(range);
+  };
 
   const createWrapped = async (selectedRange) => {
     setLoadingTimeRange(true);
@@ -189,21 +198,23 @@ function Wrapped() {
         topTracksRecent: { items: response.data.topTracks.items },
         topTracksAllTime: { items: response.data.topTracks.items },
         topArtistsRecent: { items: response.data.topArtists.items },
-        topArtistsAllTime: { items: response.data.topArtists.items }
+        topArtistsAllTime: { items: response.data.topArtists.items },
+        timestamp: new Date().toISOString(),
+        timeRange: selectedRange,
+        id: Date.now()
       };
       
       setWrappedData(formattedData);
+
+      // Clear existing history and store only this wrap
+      localStorage.setItem('wrappedHistory', JSON.stringify([formattedData]));
+
     } catch (err) {
       console.error('Error creating Wrapped:', err);
       setError('Failed to create your Wrapped');
     } finally {
       setLoadingTimeRange(false);
     }
-  };
-
-  const handleTimeRangeSelect = (range) => {
-    setTimeRange(range);
-    createWrapped(range);
   };
 
   const nextSlide = () => {
